@@ -5,9 +5,11 @@ if (!connectionString) {
   throw new Error('DATABASE_URL environment variable is required');
 }
 
+const isLocalDatabase = /localhost|127\.0\.0\.1/.test(connectionString);
+
 const pool = new Pool({
   connectionString,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
+  ssl: isLocalDatabase ? undefined : { rejectUnauthorized: false },
   max: 10,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
@@ -99,6 +101,23 @@ function buildWhereClause(where: any, params: unknown[] = [], modelName?: string
         params.push(value.equals);
         operators.push(`${fieldName} = $${params.length}`);
       }
+      if ('notIn' in value) {
+        const arrayValue = Array.isArray(value.notIn) ? value.notIn : [value.notIn];
+        if (arrayValue.length === 0) {
+          operators.push('TRUE');
+        } else {
+          params.push(arrayValue);
+          operators.push(`${fieldName} <> ALL($${params.length})`);
+        }
+      }
+      if ('has' in value) {
+        params.push([value.has]);
+        operators.push(`${fieldName} @> $${params.length}::text[]`);
+      }
+      if ('not' in value) {
+        params.push(value.not);
+        operators.push(`${fieldName} <> $${params.length}`);
+      }
 
       if (operators.length > 0) {
         parts.push(operators.join(' AND '));
@@ -120,9 +139,10 @@ function buildWhereClause(where: any, params: unknown[] = [], modelName?: string
   return parts.length ? `WHERE ${parts.join(' AND ')}` : '';
 }
 
-function buildOrderBy(orderBy: any, alias: string = 't'): string {
+function buildOrderBy(orderBy: any, alias: string = ''): string {
   if (!orderBy) return '';
   const clauses: string[] = [];
+  const prefix = alias ? `${alias}.` : '';
 
   if (Array.isArray(orderBy)) {
     for (const item of orderBy) {
@@ -131,7 +151,7 @@ function buildOrderBy(orderBy: any, alias: string = 't'): string {
   } else {
     for (const key of Object.keys(orderBy)) {
       const direction = orderBy[key] === 'desc' ? 'DESC' : 'ASC';
-      clauses.push(`${alias}.${quoteIdentifier(key)} ${direction}`);
+      clauses.push(`${prefix}${quoteIdentifier(key)} ${direction}`);
     }
   }
 

@@ -41,37 +41,32 @@ export async function POST(request: NextRequest) {
         senderId: userId,
         content,
       },
-      include: {
-        sender: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            profileImage: true,
-          },
-        },
-      },
     });
 
-    // Update conversation
     await prisma.conversation.update({
       where: { id: conversationId },
       data: {
-        lastMessage: content,
         lastMessageAt: new Date(),
       },
     });
 
+    const sender = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        firstName: true,
+      },
+    });
+
     // Create notification for other participants
-    const otherParticipants = conversation.participantIds.filter(id => id !== userId);
+    const otherParticipants = conversation.participantIds.filter((id: string) => id !== userId);
     await Promise.all(
-      otherParticipants.map(participantId =>
+      otherParticipants.map((participantId: string) =>
         prisma.notification.create({
           data: {
             userId: participantId,
             type: 'MESSAGE_RECEIVED',
             title: 'New Message',
-            message: `You have a new message from ${message.sender.firstName}`,
+            message: `You have a new message from ${sender?.firstName || 'Someone'}`,
             relatedId: message.id,
           },
         })

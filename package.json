@@ -2,7 +2,6 @@
   "name": "my-project",
   "version": "0.1.0",
   "private": true,
-
   "engines": {
     "node": "22.x"
   },
@@ -11,10 +10,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test:api": "ts-node api.test.ts",
-    "test:api:view": "ts-node run-tests.ts view",
-    "test:api:docs": "ts-node run-tests.ts docs",
-    "test:api:help": "ts-node run-tests.ts help"
+    "test:api": "npx ts-node api.test.ts",
+    "test:api:view": "npx ts-node run-tests.ts view",
+    "test:api:docs": "npx ts-node run-tests.ts docs",
+    "test:api:help": "npx ts-node run-tests.ts help"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -65,6 +64,7 @@
     "helmet": "^8.2.0",
     "input-otp": "1.4.2",
     "jest": "^30.4.2",
+    "jose": "^6.2.3",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.564.0",
     "next": "16.2.6",

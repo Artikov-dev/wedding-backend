@@ -15,13 +15,19 @@ export async function DELETE(
     }
 
     // Delete favorite
-    const favorite = await prisma.favorite.delete({
+    const favorite = await prisma.favorite.findFirst({
       where: {
-        userId_hallId: {
-          userId,
-          hallId,
-        },
+        userId,
+        hallId,
       },
+    });
+
+    if (!favorite) {
+      return errorResponse('Favorite not found', 404, 'Not found');
+    }
+
+    await prisma.favorite.delete({
+      where: { id: favorite.id },
     });
 
     return successResponse(null, 'Removed from favorites');

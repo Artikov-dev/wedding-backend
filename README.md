@@ -11,14 +11,14 @@ A comprehensive, production-ready backend API for managing wedding hall bookings
 ## 📋 Quick Navigation
 
 ### Getting Started
-- **New to the project?** Start with [QUICK_START.md](./QUICK_START.md) (5-minute setup)
-- **Want full setup details?** Read [SETUP_GUIDE.md](./SETUP_GUIDE.md)
-- **Need API reference?** Check [API_DOCUMENTATION.md](./API_DOCUMENTATION.md)
+- **New to the project?** Start with [QUICK_START.md](./docs/QUICK_START.md) (5-minute setup)
+- **Want full setup details?** Read [SETUP_GUIDE.md](./docs/SETUP_GUIDE.md)
+- **Need API reference?** Check [API_DOCUMENTATION.md](./docs/API_DOCUMENTATION.md)
 
 ### Development
-- **Testing the API?** See [TESTING_GUIDE.md](./TESTING_GUIDE.md)
-- **Understanding architecture?** Read [BACKEND_IMPLEMENTATION_SUMMARY.md](./BACKEND_IMPLEMENTATION_SUMMARY.md)
-- **Database schema?** Check `prisma/schema.prisma`
+- **Testing the API?** See [TESTING_GUIDE.md](./docs/TESTING_GUIDE.md)
+- **Understanding architecture?** Read [BACKEND_IMPLEMENTATION_SUMMARY.md](./docs/BACKEND_IMPLEMENTATION_SUMMARY.md)
+- **All documentation?** Browse [docs/](./docs/README.md)
 
 ---
 
@@ -52,11 +52,11 @@ Server runs at: **http://localhost:3000**
 ### Core Documentation
 | Document | Purpose | Read Time |
 |----------|---------|-----------|
-| [QUICK_START.md](./QUICK_START.md) | 5-minute setup and quick reference | 5 min |
-| [SETUP_GUIDE.md](./SETUP_GUIDE.md) | Complete installation and deployment guide | 20 min |
-| [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) | Full API reference with examples | 30 min |
-| [TESTING_GUIDE.md](./TESTING_GUIDE.md) | Comprehensive testing procedures | 25 min |
-| [BACKEND_IMPLEMENTATION_SUMMARY.md](./BACKEND_IMPLEMENTATION_SUMMARY.md) | Architecture and features overview | 15 min |
+| [QUICK_START.md](./docs/QUICK_START.md) | 5-minute setup and quick reference | 5 min |
+| [SETUP_GUIDE.md](./docs/SETUP_GUIDE.md) | Complete installation and deployment guide | 20 min |
+| [API_DOCUMENTATION.md](./docs/API_DOCUMENTATION.md) | Full API reference with examples | 30 min |
+| [TESTING_GUIDE.md](./docs/TESTING_GUIDE.md) | Comprehensive testing procedures | 25 min |
+| [BACKEND_IMPLEMENTATION_SUMMARY.md](./docs/BACKEND_IMPLEMENTATION_SUMMARY.md) | Architecture and features overview | 15 min |
 
 ### Key Files
 | File | Purpose |
@@ -220,7 +220,7 @@ curl -X POST http://localhost:3000/api/bookings/create \
   }'
 ```
 
-See [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) for complete endpoint reference.
+See [API_DOCUMENTATION.md](./docs/API_DOCUMENTATION.md) for complete endpoint reference.
 
 ---
 
@@ -232,7 +232,7 @@ See [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) for complete endpoint referen
 curl http://localhost:3000/api/health
 
 # Register and login
-# See TESTING_GUIDE.md for detailed examples
+# See docs/TESTING_GUIDE.md for detailed examples
 ```
 
 ### Using Postman
@@ -241,7 +241,7 @@ curl http://localhost:3000/api/health
 3. Run requests
 
 ### Manual Testing
-See [TESTING_GUIDE.md](./TESTING_GUIDE.md) for:
+See [TESTING_GUIDE.md](./docs/TESTING_GUIDE.md) for:
 - 50+ test cases
 - Error handling tests
 - Business logic tests
@@ -300,10 +300,11 @@ pnpm test:coverage    # Coverage report
 ├── middleware.ts              (RBAC middleware)
 ├── .env.example               (Environment template)
 ├── .env.local                 (Local environment - git ignored)
-├── QUICK_START.md             (5-minute setup)
-├── SETUP_GUIDE.md             (Detailed setup)
-├── API_DOCUMENTATION.md       (Full API reference)
-├── TESTING_GUIDE.md           (Testing procedures)
+├── docs/                      (All project documentation)
+│   ├── QUICK_START.md
+│   ├── SETUP_GUIDE.md
+│   ├── API_DOCUMENTATION.md
+│   └── APITEST.MD
 └── package.json
 ```
 
@@ -323,7 +324,7 @@ vercel
 3. Set environment variables
 4. Ensure PostgreSQL is accessible
 
-See [SETUP_GUIDE.md](./SETUP_GUIDE.md) for detailed deployment instructions.
+See [SETUP_GUIDE.md](./docs/SETUP_GUIDE.md) for detailed deployment instructions.
 
 ---
 
@@ -378,7 +379,7 @@ pnpm install @prisma/client
 pnpm db:generate
 ```
 
-More troubleshooting in [SETUP_GUIDE.md](./SETUP_GUIDE.md#troubleshooting).
+More troubleshooting in [SETUP_GUIDE.md](./docs/SETUP_GUIDE.md#troubleshooting).
 
 ---
 
@@ -406,15 +407,15 @@ More troubleshooting in [SETUP_GUIDE.md](./SETUP_GUIDE.md#troubleshooting).
 ## 📞 Support
 
 ### For Issues:
-1. Check [QUICK_START.md](./QUICK_START.md) - Common issues
-2. Review [SETUP_GUIDE.md](./SETUP_GUIDE.md#troubleshooting) - Troubleshooting
+1. Check [QUICK_START.md](./docs/QUICK_START.md) - Common issues
+2. Review [SETUP_GUIDE.md](./docs/SETUP_GUIDE.md#troubleshooting) - Troubleshooting
 3. Check database with `pnpm db:studio`
 4. Enable debug logs: `NODE_ENV=development pnpm dev`
 
 ### Documentation:
-- API endpoints: [API_DOCUMENTATION.md](./API_DOCUMENTATION.md)
-- Testing: [TESTING_GUIDE.md](./TESTING_GUIDE.md)
-- Architecture: [BACKEND_IMPLEMENTATION_SUMMARY.md](./BACKEND_IMPLEMENTATION_SUMMARY.md)
+- API endpoints: [API_DOCUMENTATION.md](./docs/API_DOCUMENTATION.md)
+- Testing: [TESTING_GUIDE.md](./docs/TESTING_GUIDE.md)
+- Architecture: [BACKEND_IMPLEMENTATION_SUMMARY.md](./docs/BACKEND_IMPLEMENTATION_SUMMARY.md)
 
 ---
 
@@ -473,7 +474,7 @@ curl http://localhost:3000/api/health
 
 ---
 
-**Start with [QUICK_START.md](./QUICK_START.md) and enjoy building!** 🎊
+**Start with [QUICK_START.md](./docs/QUICK_START.md) and enjoy building!** 🎊
 
 ---
 

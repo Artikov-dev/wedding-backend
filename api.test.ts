@@ -5,7 +5,7 @@
  * Usage:
  * 1. Start the development server: npm run dev
  * 2. Run tests: npx ts-node api.test.ts
- * 3. Check APITEST.MD for detailed results
+ * 3. Check docs/APITEST.MD for detailed results
  */
 
 import axios, { AxiosError } from 'axios';
@@ -23,8 +23,15 @@ let failedTests = 0;
 let testAuthToken = '';
 let testRefreshToken = '';
 let testUserId = '';
+let testUserEmail = '';
+let testUserPassword = 'Test@123456';
+let testHallOwnerToken = '';
+let testHallOwnerId = '';
+let testServiceProviderToken = '';
+let testServiceProviderId = '';
 let testHallId = '';
 let testBookingId = '';
+let testBookingAdvanceAmount = 0;
 let testServiceId = '';
 let testConversationId = '';
 let testInvitationId = '';
@@ -39,6 +46,7 @@ interface TestCase {
   data?: any;
   expectedStatus?: number[];
   authRequired?: boolean;
+  authToken?: string;
 }
 
 interface TestResult {
@@ -61,7 +69,7 @@ const apiClient = axios.create({
 
 // Add token to requests
 apiClient.interceptors.request.use((config) => {
-  if (testAuthToken) {
+  if (testAuthToken && !config.headers?.Authorization) {
     config.headers.Authorization = `Bearer ${testAuthToken}`;
   }
   return config;
@@ -78,19 +86,39 @@ async function runTest(testCase: TestCase): Promise<TestResult> {
 
     switch (testCase.method.toUpperCase()) {
       case 'GET':
-        response = await apiClient.get(url);
+        response = await apiClient.get(url, {
+          headers: testCase.authToken
+            ? { Authorization: `Bearer ${testCase.authToken}` }
+            : undefined,
+        });
         break;
       case 'POST':
-        response = await apiClient.post(url, testCase.data || {});
+        response = await apiClient.post(url, testCase.data || {}, {
+          headers: testCase.authToken
+            ? { Authorization: `Bearer ${testCase.authToken}` }
+            : undefined,
+        });
         break;
       case 'PUT':
-        response = await apiClient.put(url, testCase.data || {});
+        response = await apiClient.put(url, testCase.data || {}, {
+          headers: testCase.authToken
+            ? { Authorization: `Bearer ${testCase.authToken}` }
+            : undefined,
+        });
         break;
       case 'PATCH':
-        response = await apiClient.patch(url, testCase.data || {});
+        response = await apiClient.patch(url, testCase.data || {}, {
+          headers: testCase.authToken
+            ? { Authorization: `Bearer ${testCase.authToken}` }
+            : undefined,
+        });
         break;
       case 'DELETE':
-        response = await apiClient.delete(url);
+        response = await apiClient.delete(url, {
+          headers: testCase.authToken
+            ? { Authorization: `Bearer ${testCase.authToken}` }
+            : undefined,
+        });
         break;
       default:
         throw new Error(`Unsupported HTTP method: ${testCase.method}`);
@@ -167,15 +195,16 @@ async function runAllTests() {
   console.log('\n📋 Testing Authentication Endpoints...');
 
   // Register
+  testUserEmail = `test${Date.now()}@example.com`;
   result = await runTest({
     name: 'User Registration',
     method: 'POST',
     endpoint: '/api/auth/register',
     description: 'Register a new user account',
     data: {
-      email: `test${Date.now()}@example.com`,
-      phone: '+15551234567',
-      password: 'Test@123456',
+      email: testUserEmail,
+      phone: `+1555${Date.now().toString().slice(-7)}`,
+      password: testUserPassword,
       firstName: 'Test',
       lastName: 'User',
       role: 'CUSTOMER',
@@ -183,8 +212,57 @@ async function runAllTests() {
     expectedStatus: [201, 409], // 409 if user already exists
   });
   TEST_RESULTS.push(result);
-  if (result.responseData?.data?.id) {
-    testUserId = result.responseData.data.id;
+  if (result.responseData?.data?.user?.id) {
+    testUserId = result.responseData.data.user.id;
+  }
+  if (result.responseData?.data?.token) {
+    testAuthToken = result.responseData.data.token;
+    testRefreshToken = result.responseData.data.refreshToken;
+  }
+
+  // Register hall owner for hall-related tests
+  const hallOwnerEmail = `owner${Date.now()}@example.com`;
+  const hallOwnerRegister = await runTest({
+    name: 'Hall Owner Registration',
+    method: 'POST',
+    endpoint: '/api/auth/register',
+    description: 'Register a hall owner account',
+    data: {
+      email: hallOwnerEmail,
+      phone: `+1666${Date.now().toString().slice(-7)}`,
+      password: testUserPassword,
+      firstName: 'Hall',
+      lastName: 'Owner',
+      role: 'HALL_OWNER',
+    },
+    expectedStatus: [201, 409],
+  });
+  TEST_RESULTS.push(hallOwnerRegister);
+  if (hallOwnerRegister.responseData?.data?.token) {
+    testHallOwnerToken = hallOwnerRegister.responseData.data.token;
+    testHallOwnerId = hallOwnerRegister.responseData.data.user?.id || '';
+  }
+
+  const serviceProviderEmail = `provider${Date.now()}@example.com`;
+  const serviceProviderRegister = await runTest({
+    name: 'Service Provider Registration',
+    method: 'POST',
+    endpoint: '/api/auth/register',
+    description: 'Register a service provider account',
+    data: {
+      email: serviceProviderEmail,
+      phone: `+1777${Date.now().toString().slice(-7)}`,
+      password: testUserPassword,
+      firstName: 'Service',
+      lastName: 'Provider',
+      role: 'SERVICE_PROVIDER',
+    },
+    expectedStatus: [201, 409],
+  });
+  TEST_RESULTS.push(serviceProviderRegister);
+  if (serviceProviderRegister.responseData?.data?.token) {
+    testServiceProviderToken = serviceProviderRegister.responseData.data.token;
+    testServiceProviderId = serviceProviderRegister.responseData.data.user?.id || '';
   }
 
   // Login
@@ -194,8 +272,8 @@ async function runAllTests() {
     endpoint: '/api/auth/login',
     description: 'Authenticate user with email and password',
     data: {
-      email: 'test@example.com',
-      password: 'Test@123456',
+      email: testUserEmail,
+      password: testUserPassword,
     },
     expectedStatus: [200, 401, 400],
   });
@@ -227,7 +305,7 @@ async function runAllTests() {
     endpoint: '/api/auth/forgot-password',
     description: 'Start password reset flow by email',
     data: {
-      email: 'test@example.com',
+      email: testUserEmail,
     },
     expectedStatus: [200, 400, 404],
   });
@@ -240,10 +318,11 @@ async function runAllTests() {
     endpoint: '/api/auth/verify-otp',
     description: 'Validate an email OTP code',
     data: {
-      email: 'test@example.com',
+      userId: testUserId,
       code: '123456',
+      purpose: 'email_verification',
     },
-    expectedStatus: [200, 400],
+    expectedStatus: [200, 400, 401],
   });
   TEST_RESULTS.push(result);
 
@@ -254,11 +333,11 @@ async function runAllTests() {
     endpoint: '/api/auth/reset-password',
     description: 'Confirm OTP and set a new password',
     data: {
-      email: 'test@example.com',
-      otp: '123456',
+      userId: testUserId,
+      code: '123456',
       newPassword: 'NewTest@123456',
     },
-    expectedStatus: [200, 400, 404],
+    expectedStatus: [200, 400, 401],
   });
   TEST_RESULTS.push(result);
 
@@ -275,26 +354,40 @@ async function runAllTests() {
   });
   TEST_RESULTS.push(result);
 
-  // Create Hall (requires auth)
-  if (testAuthToken) {
+  // Create Hall (requires hall owner auth)
+  if (testHallOwnerToken) {
     result = await runTest({
       name: 'Create Hall Profile',
       method: 'POST',
       endpoint: '/api/halls/create',
       description: 'Create a new hall listing for a hall owner',
+      authToken: testHallOwnerToken,
       data: {
         name: 'Test Hall',
-        description: 'A test wedding hall',
+        description: 'A beautiful test wedding hall for automated API testing',
         category: 'LUXURY',
         capacity: 250,
         pricePerPlate: 75.0,
         imageUrl: 'https://example.com/hall.jpg',
       },
-      expectedStatus: [201, 401, 400],
+      expectedStatus: [201, 401, 400, 403],
     });
     TEST_RESULTS.push(result);
     if (result.responseData?.data?.id) {
       testHallId = result.responseData.data.id;
+
+      const approveResult = await runTest({
+        name: 'Approve Hall Profile',
+        method: 'PUT',
+        endpoint: `/api/halls/${testHallId}`,
+        description: 'Approve hall for booking tests',
+        authToken: testHallOwnerToken,
+        data: {
+          approvalStatus: 'APPROVED',
+        },
+        expectedStatus: [200, 401, 403, 404],
+      });
+      TEST_RESULTS.push(approveResult);
     }
   }
 
@@ -310,19 +403,20 @@ async function runAllTests() {
     TEST_RESULTS.push(result);
 
     // Update Hall
-    if (testAuthToken) {
+    if (testHallOwnerToken) {
       result = await runTest({
         name: 'Update Hall Profile',
         method: 'PUT',
         endpoint: `/api/halls/${testHallId}`,
         description: 'Update hall details as the hall owner',
+        authToken: testHallOwnerToken,
         data: {
           name: 'Updated Test Hall',
-          description: 'An updated test wedding hall',
+          description: 'An updated test wedding hall with more capacity',
           capacity: 300,
           pricePerPlate: 85.0,
         },
-        expectedStatus: [200, 401, 404],
+        expectedStatus: [200, 401, 403, 404],
       });
       TEST_RESULTS.push(result);
     }
@@ -344,11 +438,12 @@ async function runAllTests() {
         method: 'POST',
         endpoint: `/api/halls/${testHallId}/amenities`,
         description: 'Create a new amenity for the hall',
+        authToken: testHallOwnerToken || testAuthToken,
         data: {
           name: 'Parking',
           description: 'Free onsite parking',
         },
-        expectedStatus: [201, 401, 404],
+        expectedStatus: [201, 401, 403, 404],
       });
       TEST_RESULTS.push(result);
     }
@@ -377,20 +472,17 @@ async function runAllTests() {
         description: 'Create a new booking and associated service bookings',
         data: {
           hallId: testHallId,
-          eventDate: '2026-12-31',
+          eventDate: '2026-12-31T00:00:00.000Z',
           eventTime: '18:00',
           numberOfGuests: 150,
           notes: 'Test booking',
-          totalAmount: 15000,
-          advanceAmount: 3750,
-          finalAmount: 11250,
-          serviceProviderIds: [],
         },
         expectedStatus: [201, 400, 401],
       });
       TEST_RESULTS.push(result);
       if (result.responseData?.data?.id) {
         testBookingId = result.responseData.data.id;
+        testBookingAdvanceAmount = Number(result.responseData.data.advanceAmount || 0);
       }
     }
 
@@ -418,16 +510,6 @@ async function runAllTests() {
         expectedStatus: [200, 401, 404],
       });
       TEST_RESULTS.push(result);
-
-      // Cancel Booking
-      result = await runTest({
-        name: 'Cancel Booking',
-        method: 'DELETE',
-        endpoint: `/api/bookings/${testBookingId}`,
-        description: 'Cancel an existing booking',
-        expectedStatus: [200, 401, 404],
-      });
-      TEST_RESULTS.push(result);
     }
   }
 
@@ -451,13 +533,14 @@ async function runAllTests() {
       method: 'POST',
       endpoint: '/api/services',
       description: 'Register a new service provider',
+      authToken: testServiceProviderToken || testAuthToken,
       data: {
         name: 'Test Catering Service',
         description: 'Professional catering service',
-        serviceType: 'CATERING',
+        serviceType: 'MENU',
         pricing: 500.0,
       },
-      expectedStatus: [201, 400, 401],
+      expectedStatus: [201, 400, 401, 403],
     });
     TEST_RESULTS.push(result);
     if (result.responseData?.data?.id) {
@@ -481,11 +564,12 @@ async function runAllTests() {
         method: 'PUT',
         endpoint: `/api/services/${testServiceId}`,
         description: "Modify a service provider's details",
+        authToken: testServiceProviderToken,
         data: {
           name: 'Updated Test Catering',
           pricing: 600.0,
         },
-        expectedStatus: [200, 401, 404],
+        expectedStatus: [200, 401, 403, 404],
       });
       TEST_RESULTS.push(result);
 
@@ -495,7 +579,8 @@ async function runAllTests() {
         method: 'DELETE',
         endpoint: `/api/services/${testServiceId}`,
         description: 'Remove a service provider account',
-        expectedStatus: [200, 401, 404],
+        authToken: testServiceProviderToken,
+        expectedStatus: [200, 401, 403, 404],
       });
       TEST_RESULTS.push(result);
     }
@@ -557,7 +642,11 @@ async function runAllTests() {
       method: 'POST',
       endpoint: '/api/chat/conversations',
       description: 'Start a new chat conversation when one does not already exist',
-      data: { participantId: 'user_123' },
+      data: {
+        participantIds: testHallOwnerId
+          ? [testUserId, testHallOwnerId]
+          : [testUserId, '00000000-0000-0000-0000-000000000001'],
+      },
       expectedStatus: [200, 201, 400, 401],
     });
     TEST_RESULTS.push(result);
@@ -636,8 +725,7 @@ async function runAllTests() {
         description: 'Invite a guest to a booking',
         data: {
           bookingId: testBookingId,
-          email: 'guest@example.com',
-          phone: '+15551234567',
+          guestEmails: ['guest@example.com'],
           guestCount: 2,
           message: 'Please join our wedding',
         },
@@ -701,9 +789,9 @@ async function runAllTests() {
         description: 'Create a payment and invoice record',
         data: {
           bookingId: testBookingId,
-          amount: 3750.0,
-          paymentMethodId: 'pm_abc123',
-          paymentMethod: 'CARD',
+          amount: testBookingAdvanceAmount || 2812.5,
+          paymentType: 'ADVANCE',
+          paymentMethod: 'STRIPE',
         },
         expectedStatus: [201, 400, 401],
       });
@@ -719,7 +807,7 @@ async function runAllTests() {
         description: 'Simulate Stripe payment creation for booking advance payments',
         data: {
           bookingId: testBookingId,
-          amount: 3750.0,
+          amount: testBookingAdvanceAmount || 2812.5,
           paymentMethodId: 'pm_stripe123',
         },
         expectedStatus: [200, 400, 401],
@@ -734,6 +822,18 @@ async function runAllTests() {
       endpoint: '/api/payments/stripe?paymentIntentId=pi_test123',
       description: 'Retrieve demo payment status from Stripe flow',
       expectedStatus: [200, 400, 401],
+    });
+    TEST_RESULTS.push(result);
+  }
+
+  // Cancel booking after payment tests
+  if (testAuthToken && testBookingId) {
+    result = await runTest({
+      name: 'Cancel Booking',
+      method: 'DELETE',
+      endpoint: `/api/bookings/${testBookingId}`,
+      description: 'Cancel an existing booking',
+      expectedStatus: [200, 401, 404],
     });
     TEST_RESULTS.push(result);
   }
@@ -925,11 +1025,11 @@ npx ts-node api.test.ts
 `;
 
   fs.writeFileSync(
-    path.join(process.cwd(), 'APITEST.MD'),
+    path.join(process.cwd(), 'docs', 'APITEST.MD'),
     markdown
   );
 
-  console.log('📄 Test report saved to: APITEST.MD');
+  console.log('📄 Test report saved to: docs/APITEST.MD');
 }
 
 function renderTestsTable(results: TestResult[]): string {

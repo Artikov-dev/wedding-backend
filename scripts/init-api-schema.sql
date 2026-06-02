@@ -1,0 +1,219 @@
+-- Wedding Hall Booking API schema (matches lib/db.ts models)
+
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+CREATE TABLE IF NOT EXISTS "User" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT NOT NULL UNIQUE,
+  phone TEXT NOT NULL UNIQUE,
+  password TEXT NOT NULL,
+  "firstName" TEXT NOT NULL,
+  "lastName" TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'CUSTOMER',
+  status TEXT NOT NULL DEFAULT 'ACTIVE',
+  "profileImage" TEXT,
+  "lastLogin" TIMESTAMPTZ,
+  "isEmailVerified" BOOLEAN NOT NULL DEFAULT FALSE,
+  "isPhoneVerified" BOOLEAN NOT NULL DEFAULT FALSE,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "OTP" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "userId" UUID NOT NULL UNIQUE REFERENCES "User"(id) ON DELETE CASCADE,
+  code TEXT NOT NULL,
+  purpose TEXT NOT NULL,
+  "expiresAt" TIMESTAMPTZ NOT NULL,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "RefreshToken" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "userId" UUID NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
+  token TEXT NOT NULL UNIQUE,
+  "expiresAt" TIMESTAMPTZ NOT NULL,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "Address" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "userId" UUID NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
+  street TEXT,
+  city TEXT,
+  state TEXT,
+  country TEXT,
+  "zipCode" TEXT,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "HallProfile" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "userId" UUID NOT NULL UNIQUE REFERENCES "User"(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  description TEXT,
+  category TEXT NOT NULL DEFAULT 'STANDARD',
+  capacity INTEGER NOT NULL,
+  "pricePerPlate" NUMERIC NOT NULL,
+  "advancePercentage" NUMERIC NOT NULL DEFAULT 25,
+  "imageUrl" TEXT,
+  "approvalStatus" TEXT NOT NULL DEFAULT 'PENDING',
+  "isActive" BOOLEAN NOT NULL DEFAULT TRUE,
+  ratings NUMERIC NOT NULL DEFAULT 0,
+  "totalReviews" INTEGER NOT NULL DEFAULT 0,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "HallAmenity" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "hallId" UUID NOT NULL REFERENCES "HallProfile"(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  description TEXT,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "HallService" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "hallId" UUID NOT NULL REFERENCES "HallProfile"(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  description TEXT,
+  price NUMERIC NOT NULL DEFAULT 0,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "ServiceProvider" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "userId" UUID NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  description TEXT,
+  "serviceType" TEXT NOT NULL,
+  pricing NUMERIC NOT NULL,
+  "imageUrl" TEXT,
+  status TEXT NOT NULL DEFAULT 'AVAILABLE',
+  ratings NUMERIC NOT NULL DEFAULT 0,
+  "totalReviews" INTEGER NOT NULL DEFAULT 0,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "Booking" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "bookingNumber" TEXT NOT NULL UNIQUE,
+  "hallId" UUID NOT NULL REFERENCES "HallProfile"(id) ON DELETE CASCADE,
+  "userId" UUID NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
+  "eventDate" TIMESTAMPTZ NOT NULL,
+  "eventTime" TEXT,
+  "numberOfGuests" INTEGER NOT NULL,
+  notes TEXT,
+  "totalAmount" NUMERIC NOT NULL,
+  "advanceAmount" NUMERIC NOT NULL,
+  "finalAmount" NUMERIC NOT NULL,
+  status TEXT NOT NULL DEFAULT 'PENDING',
+  "paymentStatus" TEXT NOT NULL DEFAULT 'PENDING',
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "ServiceBooking" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "bookingId" UUID NOT NULL REFERENCES "Booking"(id) ON DELETE CASCADE,
+  "serviceProviderId" UUID NOT NULL REFERENCES "ServiceProvider"(id) ON DELETE CASCADE,
+  quantity INTEGER NOT NULL DEFAULT 1,
+  price NUMERIC NOT NULL,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "Payment" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "bookingId" UUID NOT NULL REFERENCES "Booking"(id) ON DELETE CASCADE,
+  "userId" UUID NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
+  amount NUMERIC NOT NULL,
+  "paymentType" TEXT NOT NULL,
+  "paymentMethod" TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'PENDING',
+  "stripePaymentId" TEXT,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "Invoice" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "paymentId" UUID NOT NULL REFERENCES "Payment"(id) ON DELETE CASCADE,
+  "bookingId" UUID NOT NULL REFERENCES "Booking"(id) ON DELETE CASCADE,
+  "invoiceNumber" TEXT NOT NULL UNIQUE,
+  amount NUMERIC NOT NULL,
+  "finalAmount" NUMERIC NOT NULL,
+  "dueDate" TIMESTAMPTZ NOT NULL,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "Review" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "userId" UUID NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
+  "hallId" UUID REFERENCES "HallProfile"(id) ON DELETE CASCADE,
+  "serviceProviderId" UUID REFERENCES "ServiceProvider"(id) ON DELETE CASCADE,
+  rating INTEGER NOT NULL,
+  comment TEXT,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "Favorite" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "userId" UUID NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
+  "hallId" UUID NOT NULL REFERENCES "HallProfile"(id) ON DELETE CASCADE,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE ("userId", "hallId")
+);
+
+CREATE TABLE IF NOT EXISTS "Notification" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "userId" UUID NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
+  type TEXT NOT NULL,
+  title TEXT NOT NULL,
+  message TEXT NOT NULL,
+  "relatedId" UUID,
+  "isRead" BOOLEAN NOT NULL DEFAULT FALSE,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "Conversation" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "participantIds" TEXT[] NOT NULL DEFAULT '{}',
+  "lastMessageAt" TIMESTAMPTZ,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "ChatMessage" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "conversationId" UUID NOT NULL REFERENCES "Conversation"(id) ON DELETE CASCADE,
+  "senderId" UUID NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  "isRead" BOOLEAN NOT NULL DEFAULT FALSE,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "Invitation" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "bookingId" UUID NOT NULL REFERENCES "Booking"(id) ON DELETE CASCADE,
+  "userId" UUID REFERENCES "User"(id) ON DELETE SET NULL,
+  "guestEmail" TEXT,
+  "invitedByUserId" UUID NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
+  status TEXT NOT NULL DEFAULT 'PENDING',
+  "guestCount" INTEGER NOT NULL DEFAULT 1,
+  message TEXT,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "AuditLog" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "userId" UUID REFERENCES "User"(id) ON DELETE SET NULL,
+  action TEXT NOT NULL,
+  entity TEXT,
+  "entityId" UUID,
+  metadata JSONB,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

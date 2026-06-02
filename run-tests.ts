@@ -17,7 +17,7 @@ import * as path from 'path';
 import * as os from 'os';
 
 const PROJECT_ROOT = process.cwd();
-const APITEST_FILE = path.join(PROJECT_ROOT, 'APITEST.MD');
+const APITEST_FILE = path.join(PROJECT_ROOT, 'docs', 'APITEST.MD');
 const TEST_SCRIPT = path.join(PROJECT_ROOT, 'api.test.ts');
 
 // Color codes for terminal output
@@ -73,7 +73,7 @@ async function runTests() {
     testProcess.on('close', (code) => {
       if (code === 0) {
         log('\n✨ Tests completed successfully!', 'green');
-        log('📄 Check APITEST.MD for detailed results', 'cyan');
+        log('📄 Check docs/APITEST.MD for detailed results', 'cyan');
         log('🌐 View Swagger UI at: http://localhost:3000/swagger\n', 'cyan');
         resolve();
       } else {
