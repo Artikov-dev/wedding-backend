@@ -2,11 +2,11 @@ import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { verifyRefreshToken, generateToken, generateRefreshToken } from '@/lib/auth';
 import { refreshTokenSchema } from '@/lib/validations';
-import { successResponse, errorResponse, handleApiError } from '@/lib/api-response';
+import { parseRequestBody, successResponse, errorResponse, handleApiError } from '@/lib/api-response';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await parseRequestBody(request);
 
     // Validate input
     const validationResult = refreshTokenSchema.safeParse(body);

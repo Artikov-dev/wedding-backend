@@ -1,6 +1,6 @@
 # API Test Results Report
 
-**Generated:** 2026-06-03T08:48:16.288Z
+**Generated:** 2026-06-03T09:41:09.517Z
 **API Base URL:** http://localhost:3000
 
 ## Summary
@@ -18,113 +18,113 @@
 
 | Test Name | Method | Endpoint | Status | Response Time |
 |-----------|--------|----------|--------|----------------|
-| Health Check | GET | `/api/health` | ✅ | 3592ms |
-| Get OpenAPI Specification | GET | `/api/docs` | ✅ | 62ms |
+| Health Check | GET | `/api/health` | ✅ | 2573ms |
+| Get OpenAPI Specification | GET | `/api/docs` | ✅ | 84ms |
 
 
 ### 2. Authentication (8/8)
 
 | Test Name | Method | Endpoint | Status | Response Time |
 |-----------|--------|----------|--------|----------------|
-| User Registration | POST | `/api/auth/register` | ✅ | 6265ms |
-| Hall Owner Registration | POST | `/api/auth/register` | ✅ | 2782ms |
-| Service Provider Registration | POST | `/api/auth/register` | ✅ | 2114ms |
-| User Login | POST | `/api/auth/login` | ✅ | 5011ms |
-| Refresh Authentication Token | POST | `/api/auth/refresh` | ✅ | 4882ms |
-| Request Password Reset | POST | `/api/auth/forgot-password` | ✅ | 3520ms |
-| Verify OTP | POST | `/api/auth/verify-otp` | ✅ | 2746ms |
-| Reset Password | POST | `/api/auth/reset-password` | ✅ | 3101ms |
+| User Registration | POST | `/api/auth/register` | ✅ | 3418ms |
+| Hall Owner Registration | POST | `/api/auth/register` | ✅ | 2137ms |
+| Service Provider Registration | POST | `/api/auth/register` | ✅ | 1693ms |
+| User Login | POST | `/api/auth/login` | ✅ | 3497ms |
+| Refresh Authentication Token | POST | `/api/auth/refresh` | ✅ | 3152ms |
+| Request Password Reset | POST | `/api/auth/forgot-password` | ✅ | 2981ms |
+| Verify OTP | POST | `/api/auth/verify-otp` | ✅ | 2437ms |
+| Reset Password | POST | `/api/auth/reset-password` | ✅ | 2202ms |
 
 
 ### 3. Halls Management (11/11)
 
 | Test Name | Method | Endpoint | Status | Response Time |
 |-----------|--------|----------|--------|----------------|
-| Hall Owner Registration | POST | `/api/auth/register` | ✅ | 2782ms |
-| Search Halls | GET | `/api/halls/search?city=New York&capacity=100&minPrice=1000&maxPrice=10000` | ✅ | 2675ms |
-| Create Hall Profile | POST | `/api/halls/create` | ✅ | 2891ms |
-| Approve Hall Profile | PUT | `/api/halls/a777510c-9b65-496e-9771-1f7af1faa05d` | ✅ | 2870ms |
-| Get Hall Profile | GET | `/api/halls/a777510c-9b65-496e-9771-1f7af1faa05d` | ✅ | 2949ms |
-| Update Hall Profile | PUT | `/api/halls/a777510c-9b65-496e-9771-1f7af1faa05d` | ✅ | 888ms |
-| List Hall Amenities | GET | `/api/halls/a777510c-9b65-496e-9771-1f7af1faa05d/amenities` | ✅ | 2541ms |
-| Add Hall Amenity | POST | `/api/halls/a777510c-9b65-496e-9771-1f7af1faa05d/amenities` | ✅ | 1431ms |
-| List Favorite Halls | GET | `/api/favorites` | ✅ | 2687ms |
-| Add Favorite Hall | POST | `/api/favorites` | ✅ | 946ms |
-| Remove Favorite Hall | DELETE | `/api/favorites/a777510c-9b65-496e-9771-1f7af1faa05d` | ✅ | 2681ms |
+| Hall Owner Registration | POST | `/api/auth/register` | ✅ | 2137ms |
+| Search Halls | GET | `/api/halls/search?city=New York&capacity=100&minPrice=1000&maxPrice=10000` | ✅ | 2483ms |
+| Create Hall Profile | POST | `/api/halls/create` | ✅ | 4532ms |
+| Approve Hall Profile | PUT | `/api/halls/4d706dcf-9b7f-4012-9b02-ddc4c884a141` | ✅ | 2293ms |
+| Get Hall Profile | GET | `/api/halls/4d706dcf-9b7f-4012-9b02-ddc4c884a141` | ✅ | 2945ms |
+| Update Hall Profile | PUT | `/api/halls/4d706dcf-9b7f-4012-9b02-ddc4c884a141` | ✅ | 1055ms |
+| List Hall Amenities | GET | `/api/halls/4d706dcf-9b7f-4012-9b02-ddc4c884a141/amenities` | ✅ | 2673ms |
+| Add Hall Amenity | POST | `/api/halls/4d706dcf-9b7f-4012-9b02-ddc4c884a141/amenities` | ✅ | 1050ms |
+| List Favorite Halls | GET | `/api/favorites` | ✅ | 2824ms |
+| Add Favorite Hall | POST | `/api/favorites` | ✅ | 1130ms |
+| Remove Favorite Hall | DELETE | `/api/favorites/4d706dcf-9b7f-4012-9b02-ddc4c884a141` | ✅ | 2754ms |
 
 
 ### 4. Bookings (5/5)
 
 | Test Name | Method | Endpoint | Status | Response Time |
 |-----------|--------|----------|--------|----------------|
-| List Bookings | GET | `/api/bookings?page=1&limit=10` | ✅ | 3385ms |
-| Create Booking | POST | `/api/bookings/create` | ✅ | 5233ms |
-| Get Booking Details | GET | `/api/bookings/59526fd9-a5c1-4a5a-807f-61e201bbbad6` | ✅ | 7158ms |
-| Update Booking Status | PUT | `/api/bookings/59526fd9-a5c1-4a5a-807f-61e201bbbad6` | ✅ | 1645ms |
-| Cancel Booking | DELETE | `/api/bookings/59526fd9-a5c1-4a5a-807f-61e201bbbad6` | ✅ | 4000ms |
+| List Bookings | GET | `/api/bookings?page=1&limit=10` | ✅ | 2617ms |
+| Create Booking | POST | `/api/bookings/create` | ✅ | 3120ms |
+| Get Booking Details | GET | `/api/bookings/01b0f4f9-d0a0-4ad0-8ba6-f11287374f3e` | ✅ | 4989ms |
+| Update Booking Status | PUT | `/api/bookings/01b0f4f9-d0a0-4ad0-8ba6-f11287374f3e` | ✅ | 1157ms |
+| Cancel Booking | DELETE | `/api/bookings/01b0f4f9-d0a0-4ad0-8ba6-f11287374f3e` | ✅ | 4018ms |
 
 
 ### 5. Services (6/6)
 
 | Test Name | Method | Endpoint | Status | Response Time |
 |-----------|--------|----------|--------|----------------|
-| Service Provider Registration | POST | `/api/auth/register` | ✅ | 2114ms |
-| List Service Providers | GET | `/api/services` | ✅ | 6287ms |
-| Create Service Provider | POST | `/api/services` | ✅ | 713ms |
-| Get Service Provider | GET | `/api/services/1bdd8ad2-65b9-4643-8b4b-f006a9ab2ba1` | ✅ | 3372ms |
-| Update Service Provider | PUT | `/api/services/1bdd8ad2-65b9-4643-8b4b-f006a9ab2ba1` | ✅ | 869ms |
-| Delete Service Provider | DELETE | `/api/services/1bdd8ad2-65b9-4643-8b4b-f006a9ab2ba1` | ✅ | 671ms |
+| Service Provider Registration | POST | `/api/auth/register` | ✅ | 1693ms |
+| List Service Providers | GET | `/api/services` | ✅ | 3108ms |
+| Create Service Provider | POST | `/api/services` | ✅ | 622ms |
+| Get Service Provider | GET | `/api/services/ba621471-aef4-45f8-b93e-6c2933aec1da` | ✅ | 2346ms |
+| Update Service Provider | PUT | `/api/services/ba621471-aef4-45f8-b93e-6c2933aec1da` | ✅ | 720ms |
+| Delete Service Provider | DELETE | `/api/services/ba621471-aef4-45f8-b93e-6c2933aec1da` | ✅ | 909ms |
 
 
 ### 6. Favorites (3/3)
 
 | Test Name | Method | Endpoint | Status | Response Time |
 |-----------|--------|----------|--------|----------------|
-| List Favorite Halls | GET | `/api/favorites` | ✅ | 2687ms |
-| Add Favorite Hall | POST | `/api/favorites` | ✅ | 946ms |
-| Remove Favorite Hall | DELETE | `/api/favorites/a777510c-9b65-496e-9771-1f7af1faa05d` | ✅ | 2681ms |
+| List Favorite Halls | GET | `/api/favorites` | ✅ | 2824ms |
+| Add Favorite Hall | POST | `/api/favorites` | ✅ | 1130ms |
+| Remove Favorite Hall | DELETE | `/api/favorites/4d706dcf-9b7f-4012-9b02-ddc4c884a141` | ✅ | 2754ms |
 
 
 ### 7. Chat & Messaging (4/4)
 
 | Test Name | Method | Endpoint | Status | Response Time |
 |-----------|--------|----------|--------|----------------|
-| List Chat Conversations | GET | `/api/chat/conversations` | ✅ | 3052ms |
-| Create Chat Conversation | POST | `/api/chat/conversations` | ✅ | 869ms |
-| Get Conversation Messages | GET | `/api/chat/conversations/6ce480c9-fd87-46fc-af4d-0482d4870d07` | ✅ | 6835ms |
-| Send Chat Message | POST | `/api/chat/messages` | ✅ | 4228ms |
+| List Chat Conversations | GET | `/api/chat/conversations` | ✅ | 2705ms |
+| Create Chat Conversation | POST | `/api/chat/conversations` | ✅ | 616ms |
+| Get Conversation Messages | GET | `/api/chat/conversations/4fb134ba-60db-4898-a58c-daab86c4df11` | ✅ | 4423ms |
+| Send Chat Message | POST | `/api/chat/messages` | ✅ | 3859ms |
 
 
 ### 8. Reviews (1/1)
 
 | Test Name | Method | Endpoint | Status | Response Time |
 |-----------|--------|----------|--------|----------------|
-| Create Review | POST | `/api/reviews/create` | ✅ | 6505ms |
+| Create Review | POST | `/api/reviews/create` | ✅ | 4165ms |
 
 
 ### 9. Invitations (2/2)
 
 | Test Name | Method | Endpoint | Status | Response Time |
 |-----------|--------|----------|--------|----------------|
-| List Invitations | GET | `/api/invitations` | ✅ | 2905ms |
-| Create Invitation | POST | `/api/invitations/create` | ✅ | 3327ms |
+| List Invitations | GET | `/api/invitations` | ✅ | 2682ms |
+| Create Invitation | POST | `/api/invitations/create` | ✅ | 3432ms |
 
 
 ### 10. Notifications (1/1)
 
 | Test Name | Method | Endpoint | Status | Response Time |
 |-----------|--------|----------|--------|----------------|
-| List Notifications | GET | `/api/notifications` | ✅ | 2331ms |
+| List Notifications | GET | `/api/notifications` | ✅ | 2370ms |
 
 
 ### 11. Payments (4/4)
 
 | Test Name | Method | Endpoint | Status | Response Time |
 |-----------|--------|----------|--------|----------------|
-| List Payments | GET | `/api/payments` | ✅ | 3243ms |
-| Record Payment | POST | `/api/payments/create` | ✅ | 3482ms |
-| Process Stripe Payment | POST | `/api/payments/stripe` | ✅ | 4126ms |
-| Get Stripe Payment Status | GET | `/api/payments/stripe?paymentIntentId=pi_test123` | ✅ | 20ms |
+| List Payments | GET | `/api/payments` | ✅ | 5064ms |
+| Record Payment | POST | `/api/payments/create` | ✅ | 3074ms |
+| Process Stripe Payment | POST | `/api/payments/stripe` | ✅ | 3302ms |
+| Get Stripe Payment Status | GET | `/api/payments/stripe?paymentIntentId=pi_test123` | ✅ | 36ms |
 
 
 ---
@@ -139,13 +139,13 @@
 - **Description:** Verify API and database connectivity
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 3592ms
+- **Response Time:** 2573ms
 
 - **Response:** ```json
 {
   "status": "healthy",
-  "timestamp": "2026-06-03T08:46:08.966Z",
-  "uptime": 757.0699764,
+  "timestamp": "2026-06-03T09:39:24.809Z",
+  "uptime": 421.8644024,
   "database": "connected",
   "version": "1.0.0"
 }
@@ -161,7 +161,7 @@
 - **Description:** Retrieve OpenAPI JSON document
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 62ms
+- **Response Time:** 84ms
 
 - **Response:** ```json
 {
@@ -177,8 +177,8 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000",
-      "description": "Local development server"
+      "url": "/",
+      "description": "Current server"
     }
   ],
   "security": [
@@ -2123,21 +2123,21 @@
 - **Description:** Register a new user account
 - **Status:** ✅ PASSED
 - **Status Code:** 201
-- **Response Time:** 6265ms
+- **Response Time:** 3418ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
     "user": {
-      "id": "a8815e1b-f64a-44e9-99bc-1138631a4091",
-      "email": "test1780476369036@example.com",
+      "id": "b5eb79e5-fbd5-4ee6-bf40-4f354ccb218a",
+      "email": "test1780479564908@example.com",
       "firstName": "Test",
       "lastName": "User",
       "role": "CUSTOMER"
     },
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhODgxNWUxYi1mNjRhLTQ0ZTktOTliYy0xMTM4NjMxYTQwOTEiLCJlbWFpbCI6InRlc3QxNzgwNDc2MzY5MDM2QGV4YW1wbGUuY29tIiwicm9sZSI6IkNVU1RPTUVSIiwiaWF0IjoxNzgwNDc2Mzc0LCJleHAiOjE3ODEwODExNzR9.ij-ZL24YjHMMxawtURECjbQOlOm5dxwmDjaYjewaRRo",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhODgxNWUxYi1mNjRhLTQ0ZTktOTliYy0xMTM4NjMxYTQwOTEiLCJpYXQiOjE3ODA0NzYzNzQsImV4cCI6MTc4MzA2ODM3NH0.ILJirJpSVv_RXljP47c8nKc7mejTh3S14l5uNUUgT9U"
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiNWViNzllNS1mYmQ1LTRlZTYtYmY0MC00ZjM1NGNjYjIxOGEiLCJlbWFpbCI6InRlc3QxNzgwNDc5NTY0OTA4QGV4YW1wbGUuY29tIiwicm9sZSI6IkNVU1RPTUVSIiwiaWF0IjoxNzgwNDc5NTY4LCJleHAiOjE3ODEwODQzNjh9.B9XR6trveEYxZIRn1-MzjcNU1Xpgw13hLKtksR7OiO0",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiNWViNzllNS1mYmQ1LTRlZTYtYmY0MC00ZjM1NGNjYjIxOGEiLCJpYXQiOjE3ODA0Nzk1NjgsImV4cCI6MTc4MzA3MTU2OH0.pEMj0oy6QHDUAKZFIGbYFTgF0m_OZYzgwruqvKNF6Ew"
   },
   "message": "User registered successfully",
   "statusCode": 201
@@ -2154,21 +2154,21 @@
 - **Description:** Register a hall owner account
 - **Status:** ✅ PASSED
 - **Status Code:** 201
-- **Response Time:** 2782ms
+- **Response Time:** 2137ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
     "user": {
-      "id": "e0810b03-7b47-4a07-b329-2af44d42e082",
-      "email": "owner1780476375302@example.com",
+      "id": "876cb23d-279e-4a8d-a4d2-040b09ecacf6",
+      "email": "owner1780479568326@example.com",
       "firstName": "Hall",
       "lastName": "Owner",
       "role": "HALL_OWNER"
     },
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMDgxMGIwMy03YjQ3LTRhMDctYjMyOS0yYWY0NGQ0MmUwODIiLCJlbWFpbCI6Im93bmVyMTc4MDQ3NjM3NTMwMkBleGFtcGxlLmNvbSIsInJvbGUiOiJIQUxMX09XTkVSIiwiaWF0IjoxNzgwNDc2Mzc3LCJleHAiOjE3ODEwODExNzd9.SE5mRPVQpex41XfHbN8ciDD6wq1-kP1y-ckjJ6hY1Ic",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMDgxMGIwMy03YjQ3LTRhMDctYjMyOS0yYWY0NGQ0MmUwODIiLCJpYXQiOjE3ODA0NzYzNzcsImV4cCI6MTc4MzA2ODM3N30.Hh7UHH6Hh3jFxSWUBgdCfriJ4aWJ0nzGVa1HfI9N2Ss"
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NzZjYjIzZC0yNzllLTRhOGQtYTRkMi0wNDBiMDllY2FjZjYiLCJlbWFpbCI6Im93bmVyMTc4MDQ3OTU2ODMyNkBleGFtcGxlLmNvbSIsInJvbGUiOiJIQUxMX09XTkVSIiwiaWF0IjoxNzgwNDc5NTY5LCJleHAiOjE3ODEwODQzNjl9.uKbuyvrDELJ4c0yuqGz3qQmqZy9nPaNO-UBQpnvjSN0",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NzZjYjIzZC0yNzllLTRhOGQtYTRkMi0wNDBiMDllY2FjZjYiLCJpYXQiOjE3ODA0Nzk1NjksImV4cCI6MTc4MzA3MTU2OX0.BVwodflgYCilYxOzQs-Lbo5_dycCrKALoGz4uM1Yk3c"
   },
   "message": "User registered successfully",
   "statusCode": 201
@@ -2185,21 +2185,21 @@
 - **Description:** Register a service provider account
 - **Status:** ✅ PASSED
 - **Status Code:** 201
-- **Response Time:** 2114ms
+- **Response Time:** 1693ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
     "user": {
-      "id": "4e01671d-69b7-42db-aada-acfa443852ea",
-      "email": "provider1780476378084@example.com",
+      "id": "dec7fc15-24c8-48cc-8653-0bf629d8e0fd",
+      "email": "provider1780479570464@example.com",
       "firstName": "Service",
       "lastName": "Provider",
       "role": "SERVICE_PROVIDER"
     },
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0ZTAxNjcxZC02OWI3LTQyZGItYWFkYS1hY2ZhNDQzODUyZWEiLCJlbWFpbCI6InByb3ZpZGVyMTc4MDQ3NjM3ODA4NEBleGFtcGxlLmNvbSIsInJvbGUiOiJTRVJWSUNFX1BST1ZJREVSIiwiaWF0IjoxNzgwNDc2Mzc5LCJleHAiOjE3ODEwODExNzl9.y8eFjN8AQuc_yoUEft8tFlcfzytMwReTXI5tKSfhPz8",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0ZTAxNjcxZC02OWI3LTQyZGItYWFkYS1hY2ZhNDQzODUyZWEiLCJpYXQiOjE3ODA0NzYzNzksImV4cCI6MTc4MzA2ODM3OX0.uKwdRrDtAv_YUYnBNuGP5RaHnPJPOykMnQCezrHQmZU"
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJkZWM3ZmMxNS0yNGM4LTQ4Y2MtODY1My0wYmY2MjlkOGUwZmQiLCJlbWFpbCI6InByb3ZpZGVyMTc4MDQ3OTU3MDQ2NEBleGFtcGxlLmNvbSIsInJvbGUiOiJTRVJWSUNFX1BST1ZJREVSIiwiaWF0IjoxNzgwNDc5NTcxLCJleHAiOjE3ODEwODQzNzF9.bsPEUPHimqnZzBWo-0cuFBSbg5VLMqxhYZFJekzzfa8",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJkZWM3ZmMxNS0yNGM4LTQ4Y2MtODY1My0wYmY2MjlkOGUwZmQiLCJpYXQiOjE3ODA0Nzk1NzEsImV4cCI6MTc4MzA3MTU3MX0.3QEStMQb9QPhYGAdLFxIQ34VyJ8bxQB6dcjr78IkDic"
   },
   "message": "User registered successfully",
   "statusCode": 201
@@ -2216,21 +2216,21 @@
 - **Description:** Authenticate user with email and password
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 5011ms
+- **Response Time:** 3497ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
     "user": {
-      "id": "a8815e1b-f64a-44e9-99bc-1138631a4091",
-      "email": "test1780476369036@example.com",
+      "id": "b5eb79e5-fbd5-4ee6-bf40-4f354ccb218a",
+      "email": "test1780479564908@example.com",
       "firstName": "Test",
       "lastName": "User",
       "role": "CUSTOMER"
     },
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhODgxNWUxYi1mNjRhLTQ0ZTktOTliYy0xMTM4NjMxYTQwOTEiLCJlbWFpbCI6InRlc3QxNzgwNDc2MzY5MDM2QGV4YW1wbGUuY29tIiwicm9sZSI6IkNVU1RPTUVSIiwiaWF0IjoxNzgwNDc2Mzg0LCJleHAiOjE3ODEwODExODR9.xRc7JeHMcaNYontizlQb9yh1GjqUbGXAPKIuJs-lVWU",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhODgxNWUxYi1mNjRhLTQ0ZTktOTliYy0xMTM4NjMxYTQwOTEiLCJpYXQiOjE3ODA0NzYzODQsImV4cCI6MTc4MzA2ODM4NH0._I_dfeBFokKEdh5waZyhTf-JaMve1Kt504M_cOPIEpE"
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiNWViNzllNS1mYmQ1LTRlZTYtYmY0MC00ZjM1NGNjYjIxOGEiLCJlbWFpbCI6InRlc3QxNzgwNDc5NTY0OTA4QGV4YW1wbGUuY29tIiwicm9sZSI6IkNVU1RPTUVSIiwiaWF0IjoxNzgwNDc5NTc1LCJleHAiOjE3ODEwODQzNzV9.bqPvNaCIx8isTGO8_ycXa4dghjC1NA1P2Q9c5_PEO7s",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiNWViNzllNS1mYmQ1LTRlZTYtYmY0MC00ZjM1NGNjYjIxOGEiLCJpYXQiOjE3ODA0Nzk1NzUsImV4cCI6MTc4MzA3MTU3NX0.K66yAeOGp45tfx9PlrUdaJ1AFCxFjRd02cLgYiSGieM"
   },
   "message": "Login successful",
   "statusCode": 200
@@ -2247,14 +2247,14 @@
 - **Description:** Obtain a new JWT using refresh token
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 4882ms
+- **Response Time:** 3152ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhODgxNWUxYi1mNjRhLTQ0ZTktOTliYy0xMTM4NjMxYTQwOTEiLCJlbWFpbCI6InRlc3QxNzgwNDc2MzY5MDM2QGV4YW1wbGUuY29tIiwicm9sZSI6IkNVU1RPTUVSIiwiaWF0IjoxNzgwNDc2Mzg5LCJleHAiOjE3ODEwODExODl9.mIo3UnInpnWdjHhqLPU9MPaTNekej6O2RXGKKcHWWFg",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhODgxNWUxYi1mNjRhLTQ0ZTktOTliYy0xMTM4NjMxYTQwOTEiLCJpYXQiOjE3ODA0NzYzODksImV4cCI6MTc4MzA2ODM4OX0.PHDPwa1XqZknhDFV6db6KzK8EG-tiEytshNwqhoG-r4"
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiNWViNzllNS1mYmQ1LTRlZTYtYmY0MC00ZjM1NGNjYjIxOGEiLCJlbWFpbCI6InRlc3QxNzgwNDc5NTY0OTA4QGV4YW1wbGUuY29tIiwicm9sZSI6IkNVU1RPTUVSIiwiaWF0IjoxNzgwNDc5NTc4LCJleHAiOjE3ODEwODQzNzh9.UTDpnyh7KC8w7bx689e1lq1eC9_e-U2_bFu5GEcSsPc",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiNWViNzllNS1mYmQ1LTRlZTYtYmY0MC00ZjM1NGNjYjIxOGEiLCJpYXQiOjE3ODA0Nzk1NzgsImV4cCI6MTc4MzA3MTU3OH0.T7PECVHFkj_o2wllm82DK7tRype1YEkMAMxMy_Ma0wk"
   },
   "message": "Token refreshed successfully",
   "statusCode": 200
@@ -2271,13 +2271,13 @@
 - **Description:** Start password reset flow by email
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 3520ms
+- **Response Time:** 2981ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
-    "userId": "a8815e1b-f64a-44e9-99bc-1138631a4091"
+    "userId": "b5eb79e5-fbd5-4ee6-bf40-4f354ccb218a"
   },
   "message": "Password reset OTP sent to email",
   "statusCode": 200
@@ -2294,7 +2294,7 @@
 - **Description:** Validate an email OTP code
 - **Status:** ✅ PASSED
 - **Status Code:** 401
-- **Response Time:** 2746ms
+- **Response Time:** 2437ms
 
 - **Response:** ```json
 {
@@ -2315,7 +2315,7 @@
 - **Description:** Confirm OTP and set a new password
 - **Status:** ✅ PASSED
 - **Status Code:** 401
-- **Response Time:** 3101ms
+- **Response Time:** 2202ms
 
 - **Response:** ```json
 {
@@ -2336,7 +2336,7 @@
 - **Description:** Search halls by city, capacity, price, and rating
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 2675ms
+- **Response Time:** 2483ms
 
 - **Response:** ```json
 {
@@ -2365,14 +2365,14 @@
 - **Description:** Create a new hall listing for a hall owner
 - **Status:** ✅ PASSED
 - **Status Code:** 201
-- **Response Time:** 2891ms
+- **Response Time:** 4532ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
-    "id": "a777510c-9b65-496e-9771-1f7af1faa05d",
-    "userId": "e0810b03-7b47-4a07-b329-2af44d42e082",
+    "id": "4d706dcf-9b7f-4012-9b02-ddc4c884a141",
+    "userId": "876cb23d-279e-4a8d-a4d2-040b09ecacf6",
     "name": "Test Hall",
     "description": "A beautiful test wedding hall for automated API testing",
     "category": "LUXURY",
@@ -2384,8 +2384,8 @@
     "isActive": true,
     "ratings": "0",
     "totalReviews": 0,
-    "createdAt": "2026-06-03T08:46:43.696Z",
-    "updatedAt": "2026-06-03T08:46:43.696Z"
+    "createdAt": "2026-06-03T09:39:52.235Z",
+    "updatedAt": "2026-06-03T09:39:52.235Z"
   },
   "message": "Hall created successfully. Pending admin approval.",
   "statusCode": 201
@@ -2398,18 +2398,18 @@
 ### Test 13: Approve Hall Profile
 
 - **Method:** PUT
-- **Endpoint:** /api/halls/a777510c-9b65-496e-9771-1f7af1faa05d
+- **Endpoint:** /api/halls/4d706dcf-9b7f-4012-9b02-ddc4c884a141
 - **Description:** Approve hall for booking tests
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 2870ms
+- **Response Time:** 2293ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
-    "id": "a777510c-9b65-496e-9771-1f7af1faa05d",
-    "userId": "e0810b03-7b47-4a07-b329-2af44d42e082",
+    "id": "4d706dcf-9b7f-4012-9b02-ddc4c884a141",
+    "userId": "876cb23d-279e-4a8d-a4d2-040b09ecacf6",
     "name": "Test Hall",
     "description": "A beautiful test wedding hall for automated API testing",
     "category": "LUXURY",
@@ -2421,8 +2421,8 @@
     "isActive": true,
     "ratings": "0",
     "totalReviews": 0,
-    "createdAt": "2026-06-03T08:46:43.696Z",
-    "updatedAt": "2026-06-03T08:46:43.696Z"
+    "createdAt": "2026-06-03T09:39:52.235Z",
+    "updatedAt": "2026-06-03T09:39:52.235Z"
   },
   "message": "Hall updated successfully",
   "statusCode": 200
@@ -2435,18 +2435,18 @@
 ### Test 14: Get Hall Profile
 
 - **Method:** GET
-- **Endpoint:** /api/halls/a777510c-9b65-496e-9771-1f7af1faa05d
+- **Endpoint:** /api/halls/4d706dcf-9b7f-4012-9b02-ddc4c884a141
 - **Description:** Retrieve hall profile by ID
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 2949ms
+- **Response Time:** 2945ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
-    "id": "a777510c-9b65-496e-9771-1f7af1faa05d",
-    "userId": "e0810b03-7b47-4a07-b329-2af44d42e082",
+    "id": "4d706dcf-9b7f-4012-9b02-ddc4c884a141",
+    "userId": "876cb23d-279e-4a8d-a4d2-040b09ecacf6",
     "name": "Test Hall",
     "description": "A beautiful test wedding hall for automated API testing",
     "category": "LUXURY",
@@ -2458,14 +2458,14 @@
     "isActive": true,
     "ratings": "0",
     "totalReviews": 0,
-    "createdAt": "2026-06-03T08:46:43.696Z",
-    "updatedAt": "2026-06-03T08:46:43.696Z",
+    "createdAt": "2026-06-03T09:39:52.235Z",
+    "updatedAt": "2026-06-03T09:39:52.235Z",
     "user": {
-      "id": "e0810b03-7b47-4a07-b329-2af44d42e082",
+      "id": "876cb23d-279e-4a8d-a4d2-040b09ecacf6",
       "firstName": "Hall",
       "lastName": "Owner",
-      "phone": "+16666375302",
-      "email": "owner1780476375302@example.com"
+      "phone": "+16669568326",
+      "email": "owner1780479568326@example.com"
     },
     "amenities": [],
     "services": [],
@@ -2487,18 +2487,18 @@
 ### Test 15: Update Hall Profile
 
 - **Method:** PUT
-- **Endpoint:** /api/halls/a777510c-9b65-496e-9771-1f7af1faa05d
+- **Endpoint:** /api/halls/4d706dcf-9b7f-4012-9b02-ddc4c884a141
 - **Description:** Update hall details as the hall owner
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 888ms
+- **Response Time:** 1055ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
-    "id": "a777510c-9b65-496e-9771-1f7af1faa05d",
-    "userId": "e0810b03-7b47-4a07-b329-2af44d42e082",
+    "id": "4d706dcf-9b7f-4012-9b02-ddc4c884a141",
+    "userId": "876cb23d-279e-4a8d-a4d2-040b09ecacf6",
     "name": "Updated Test Hall",
     "description": "An updated test wedding hall with more capacity",
     "category": "LUXURY",
@@ -2510,8 +2510,8 @@
     "isActive": true,
     "ratings": "0",
     "totalReviews": 0,
-    "createdAt": "2026-06-03T08:46:43.696Z",
-    "updatedAt": "2026-06-03T08:46:43.696Z"
+    "createdAt": "2026-06-03T09:39:52.235Z",
+    "updatedAt": "2026-06-03T09:39:52.235Z"
   },
   "message": "Hall updated successfully",
   "statusCode": 200
@@ -2524,11 +2524,11 @@
 ### Test 16: List Hall Amenities
 
 - **Method:** GET
-- **Endpoint:** /api/halls/a777510c-9b65-496e-9771-1f7af1faa05d/amenities
+- **Endpoint:** /api/halls/4d706dcf-9b7f-4012-9b02-ddc4c884a141/amenities
 - **Description:** Get amenities for a specific hall
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 2541ms
+- **Response Time:** 2673ms
 
 - **Response:** ```json
 {
@@ -2545,21 +2545,21 @@
 ### Test 17: Add Hall Amenity
 
 - **Method:** POST
-- **Endpoint:** /api/halls/a777510c-9b65-496e-9771-1f7af1faa05d/amenities
+- **Endpoint:** /api/halls/4d706dcf-9b7f-4012-9b02-ddc4c884a141/amenities
 - **Description:** Create a new amenity for the hall
 - **Status:** ✅ PASSED
 - **Status Code:** 201
-- **Response Time:** 1431ms
+- **Response Time:** 1050ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
-    "id": "23769c00-0eb5-4c95-ab06-f8466b5323a4",
-    "hallId": "a777510c-9b65-496e-9771-1f7af1faa05d",
+    "id": "5447c93f-1ad1-4175-ac75-7223599c3001",
+    "hallId": "4d706dcf-9b7f-4012-9b02-ddc4c884a141",
     "name": "Parking",
     "description": "Free onsite parking",
-    "createdAt": "2026-06-03T08:46:54.360Z"
+    "createdAt": "2026-06-03T09:40:02.110Z"
   },
   "message": "Amenity added successfully",
   "statusCode": 201
@@ -2576,7 +2576,7 @@
 - **Description:** Retrieve bookings with pagination and role-aware filtering
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 3385ms
+- **Response Time:** 2617ms
 
 - **Response:** ```json
 {
@@ -2605,16 +2605,16 @@
 - **Description:** Create a new booking and associated service bookings
 - **Status:** ✅ PASSED
 - **Status Code:** 201
-- **Response Time:** 5233ms
+- **Response Time:** 3120ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
-    "id": "59526fd9-a5c1-4a5a-807f-61e201bbbad6",
-    "bookingNumber": "BK1780476422811243",
-    "hallId": "a777510c-9b65-496e-9771-1f7af1faa05d",
-    "userId": "a8815e1b-f64a-44e9-99bc-1138631a4091",
+    "id": "01b0f4f9-d0a0-4ad0-8ba6-f11287374f3e",
+    "bookingNumber": "BK1780479608515138",
+    "hallId": "4d706dcf-9b7f-4012-9b02-ddc4c884a141",
+    "userId": "b5eb79e5-fbd5-4ee6-bf40-4f354ccb218a",
     "eventDate": "2026-12-31T00:00:00.000Z",
     "eventTime": "18:00",
     "numberOfGuests": 150,
@@ -2624,8 +2624,8 @@
     "finalAmount": "9562.5",
     "status": "PENDING",
     "paymentStatus": "PENDING",
-    "createdAt": "2026-06-03T08:47:01.849Z",
-    "updatedAt": "2026-06-03T08:47:01.849Z"
+    "createdAt": "2026-06-03T09:40:07.659Z",
+    "updatedAt": "2026-06-03T09:40:07.659Z"
   },
   "message": "Booking created successfully. Please complete the advance payment to confirm.",
   "statusCode": 201
@@ -2638,20 +2638,20 @@
 ### Test 20: Get Booking Details
 
 - **Method:** GET
-- **Endpoint:** /api/bookings/59526fd9-a5c1-4a5a-807f-61e201bbbad6
+- **Endpoint:** /api/bookings/01b0f4f9-d0a0-4ad0-8ba6-f11287374f3e
 - **Description:** Retrieve a single booking by ID
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 7158ms
+- **Response Time:** 4989ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
-    "id": "59526fd9-a5c1-4a5a-807f-61e201bbbad6",
-    "bookingNumber": "BK1780476422811243",
-    "hallId": "a777510c-9b65-496e-9771-1f7af1faa05d",
-    "userId": "a8815e1b-f64a-44e9-99bc-1138631a4091",
+    "id": "01b0f4f9-d0a0-4ad0-8ba6-f11287374f3e",
+    "bookingNumber": "BK1780479608515138",
+    "hallId": "4d706dcf-9b7f-4012-9b02-ddc4c884a141",
+    "userId": "b5eb79e5-fbd5-4ee6-bf40-4f354ccb218a",
     "eventDate": "2026-12-31T00:00:00.000Z",
     "eventTime": "18:00",
     "numberOfGuests": 150,
@@ -2661,11 +2661,11 @@
     "finalAmount": "9562.5",
     "status": "PENDING",
     "paymentStatus": "PENDING",
-    "createdAt": "2026-06-03T08:47:01.849Z",
-    "updatedAt": "2026-06-03T08:47:01.849Z",
+    "createdAt": "2026-06-03T09:40:07.659Z",
+    "updatedAt": "2026-06-03T09:40:07.659Z",
     "hall": {
-      "id": "a777510c-9b65-496e-9771-1f7af1faa05d",
-      "userId": "e0810b03-7b47-4a07-b329-2af44d42e082",
+      "id": "4d706dcf-9b7f-4012-9b02-ddc4c884a141",
+      "userId": "876cb23d-279e-4a8d-a4d2-040b09ecacf6",
       "name": "Updated Test Hall",
       "description": "An updated test wedding hall with more capacity",
       "category": "LUXURY",
@@ -2677,26 +2677,26 @@
       "isActive": true,
       "ratings": "0",
       "totalReviews": 0,
-      "createdAt": "2026-06-03T08:46:43.696Z",
-      "updatedAt": "2026-06-03T08:46:43.696Z",
+      "createdAt": "2026-06-03T09:39:52.235Z",
+      "updatedAt": "2026-06-03T09:39:52.235Z",
       "amenities": [
         {
-          "id": "23769c00-0eb5-4c95-ab06-f8466b5323a4",
-          "hallId": "a777510c-9b65-496e-9771-1f7af1faa05d",
+          "id": "5447c93f-1ad1-4175-ac75-7223599c3001",
+          "hallId": "4d706dcf-9b7f-4012-9b02-ddc4c884a141",
           "name": "Parking",
           "description": "Free onsite parking",
-          "createdAt": "2026-06-03T08:46:54.360Z"
+          "createdAt": "2026-06-03T09:40:02.110Z"
         }
       ],
       "services": [],
       "user": null
     },
     "user": {
-      "id": "a8815e1b-f64a-44e9-99bc-1138631a4091",
+      "id": "b5eb79e5-fbd5-4ee6-bf40-4f354ccb218a",
       "firstName": "Test",
       "lastName": "User",
-      "email": "test1780476369036@example.com",
-      "phone": "+15556369036"
+      "email": "test1780479564908@example.com",
+      "phone": "+15559564908"
     },
     "serviceBookings": [],
     "payments": [],
@@ -2713,20 +2713,20 @@
 ### Test 21: Update Booking Status
 
 - **Method:** PUT
-- **Endpoint:** /api/bookings/59526fd9-a5c1-4a5a-807f-61e201bbbad6
+- **Endpoint:** /api/bookings/01b0f4f9-d0a0-4ad0-8ba6-f11287374f3e
 - **Description:** Update booking status or details
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 1645ms
+- **Response Time:** 1157ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
-    "id": "59526fd9-a5c1-4a5a-807f-61e201bbbad6",
-    "bookingNumber": "BK1780476422811243",
-    "hallId": "a777510c-9b65-496e-9771-1f7af1faa05d",
-    "userId": "a8815e1b-f64a-44e9-99bc-1138631a4091",
+    "id": "01b0f4f9-d0a0-4ad0-8ba6-f11287374f3e",
+    "bookingNumber": "BK1780479608515138",
+    "hallId": "4d706dcf-9b7f-4012-9b02-ddc4c884a141",
+    "userId": "b5eb79e5-fbd5-4ee6-bf40-4f354ccb218a",
     "eventDate": "2026-12-31T00:00:00.000Z",
     "eventTime": "18:00",
     "numberOfGuests": 150,
@@ -2736,8 +2736,8 @@
     "finalAmount": "9562.5",
     "status": "CONFIRMED",
     "paymentStatus": "PENDING",
-    "createdAt": "2026-06-03T08:47:01.849Z",
-    "updatedAt": "2026-06-03T08:47:01.849Z"
+    "createdAt": "2026-06-03T09:40:07.659Z",
+    "updatedAt": "2026-06-03T09:40:07.659Z"
   },
   "message": "Booking updated successfully",
   "statusCode": 200
@@ -2754,7 +2754,7 @@
 - **Description:** Search service providers with optional filters
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 6287ms
+- **Response Time:** 3108ms
 
 - **Response:** ```json
 {
@@ -2799,14 +2799,14 @@
 - **Description:** Register a new service provider
 - **Status:** ✅ PASSED
 - **Status Code:** 201
-- **Response Time:** 713ms
+- **Response Time:** 622ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
-    "id": "1bdd8ad2-65b9-4643-8b4b-f006a9ab2ba1",
-    "userId": "4e01671d-69b7-42db-aada-acfa443852ea",
+    "id": "ba621471-aef4-45f8-b93e-6c2933aec1da",
+    "userId": "dec7fc15-24c8-48cc-8653-0bf629d8e0fd",
     "name": "Test Catering Service",
     "description": "Professional catering service",
     "serviceType": "MENU",
@@ -2815,8 +2815,8 @@
     "status": "AVAILABLE",
     "ratings": "0",
     "totalReviews": 0,
-    "createdAt": "2026-06-03T08:47:18.824Z",
-    "updatedAt": "2026-06-03T08:47:18.824Z"
+    "createdAt": "2026-06-03T09:40:17.847Z",
+    "updatedAt": "2026-06-03T09:40:17.847Z"
   },
   "message": "Service created successfully",
   "statusCode": 201
@@ -2829,18 +2829,18 @@
 ### Test 24: Get Service Provider
 
 - **Method:** GET
-- **Endpoint:** /api/services/1bdd8ad2-65b9-4643-8b4b-f006a9ab2ba1
+- **Endpoint:** /api/services/ba621471-aef4-45f8-b93e-6c2933aec1da
 - **Description:** Fetch a service provider record
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 3372ms
+- **Response Time:** 2346ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
-    "id": "1bdd8ad2-65b9-4643-8b4b-f006a9ab2ba1",
-    "userId": "4e01671d-69b7-42db-aada-acfa443852ea",
+    "id": "ba621471-aef4-45f8-b93e-6c2933aec1da",
+    "userId": "dec7fc15-24c8-48cc-8653-0bf629d8e0fd",
     "name": "Test Catering Service",
     "description": "Professional catering service",
     "serviceType": "MENU",
@@ -2849,14 +2849,14 @@
     "status": "AVAILABLE",
     "ratings": "0",
     "totalReviews": 0,
-    "createdAt": "2026-06-03T08:47:18.824Z",
-    "updatedAt": "2026-06-03T08:47:18.824Z",
+    "createdAt": "2026-06-03T09:40:17.847Z",
+    "updatedAt": "2026-06-03T09:40:17.847Z",
     "user": {
-      "id": "4e01671d-69b7-42db-aada-acfa443852ea",
+      "id": "dec7fc15-24c8-48cc-8653-0bf629d8e0fd",
       "firstName": "Service",
       "lastName": "Provider",
-      "phone": "+17776378084",
-      "email": "provider1780476378084@example.com",
+      "phone": "+17779570464",
+      "email": "provider1780479570464@example.com",
       "profileImage": null
     }
   },
@@ -2871,18 +2871,18 @@
 ### Test 25: Update Service Provider
 
 - **Method:** PUT
-- **Endpoint:** /api/services/1bdd8ad2-65b9-4643-8b4b-f006a9ab2ba1
+- **Endpoint:** /api/services/ba621471-aef4-45f8-b93e-6c2933aec1da
 - **Description:** Modify a service provider's details
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 869ms
+- **Response Time:** 720ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
-    "id": "1bdd8ad2-65b9-4643-8b4b-f006a9ab2ba1",
-    "userId": "4e01671d-69b7-42db-aada-acfa443852ea",
+    "id": "ba621471-aef4-45f8-b93e-6c2933aec1da",
+    "userId": "dec7fc15-24c8-48cc-8653-0bf629d8e0fd",
     "name": "Updated Test Catering",
     "description": "Professional catering service",
     "serviceType": "MENU",
@@ -2891,8 +2891,8 @@
     "status": "AVAILABLE",
     "ratings": "0",
     "totalReviews": 0,
-    "createdAt": "2026-06-03T08:47:18.824Z",
-    "updatedAt": "2026-06-03T08:47:18.824Z"
+    "createdAt": "2026-06-03T09:40:17.847Z",
+    "updatedAt": "2026-06-03T09:40:17.847Z"
   },
   "message": "Service updated successfully",
   "statusCode": 200
@@ -2905,11 +2905,11 @@
 ### Test 26: Delete Service Provider
 
 - **Method:** DELETE
-- **Endpoint:** /api/services/1bdd8ad2-65b9-4643-8b4b-f006a9ab2ba1
+- **Endpoint:** /api/services/ba621471-aef4-45f8-b93e-6c2933aec1da
 - **Description:** Remove a service provider account
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 671ms
+- **Response Time:** 909ms
 
 - **Response:** ```json
 {
@@ -2930,7 +2930,7 @@
 - **Description:** Retrieve the authenticated user's favorite halls
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 2687ms
+- **Response Time:** 2824ms
 
 - **Response:** ```json
 {
@@ -2959,16 +2959,16 @@
 - **Description:** Mark a hall as favored by the authenticated user
 - **Status:** ✅ PASSED
 - **Status Code:** 201
-- **Response Time:** 946ms
+- **Response Time:** 1130ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
-    "id": "cbdee42f-98c6-4f12-9f9f-83cc7fbed7a0",
-    "userId": "a8815e1b-f64a-44e9-99bc-1138631a4091",
-    "hallId": "a777510c-9b65-496e-9771-1f7af1faa05d",
-    "createdAt": "2026-06-03T08:47:27.409Z"
+    "id": "8bba68d4-4e0d-490c-8243-f7ebd6f0322d",
+    "userId": "b5eb79e5-fbd5-4ee6-bf40-4f354ccb218a",
+    "hallId": "4d706dcf-9b7f-4012-9b02-ddc4c884a141",
+    "createdAt": "2026-06-03T09:40:25.717Z"
   },
   "message": "Added to favorites",
   "statusCode": 201
@@ -2981,11 +2981,11 @@
 ### Test 29: Remove Favorite Hall
 
 - **Method:** DELETE
-- **Endpoint:** /api/favorites/a777510c-9b65-496e-9771-1f7af1faa05d
+- **Endpoint:** /api/favorites/4d706dcf-9b7f-4012-9b02-ddc4c884a141
 - **Description:** Delete a hall from the authenticated user's favorites
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 2681ms
+- **Response Time:** 2754ms
 
 - **Response:** ```json
 {
@@ -3006,7 +3006,7 @@
 - **Description:** Retrieve chat conversations for the authenticated user
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 3052ms
+- **Response Time:** 2705ms
 
 - **Response:** ```json
 {
@@ -3035,20 +3035,20 @@
 - **Description:** Start a new chat conversation when one does not already exist
 - **Status:** ✅ PASSED
 - **Status Code:** 201
-- **Response Time:** 869ms
+- **Response Time:** 616ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
-    "id": "6ce480c9-fd87-46fc-af4d-0482d4870d07",
+    "id": "4fb134ba-60db-4898-a58c-daab86c4df11",
     "participantIds": [
-      "a8815e1b-f64a-44e9-99bc-1138631a4091",
-      "e0810b03-7b47-4a07-b329-2af44d42e082"
+      "876cb23d-279e-4a8d-a4d2-040b09ecacf6",
+      "b5eb79e5-fbd5-4ee6-bf40-4f354ccb218a"
     ],
     "lastMessageAt": null,
-    "createdAt": "2026-06-03T08:47:33.909Z",
-    "updatedAt": "2026-06-03T08:47:33.909Z"
+    "createdAt": "2026-06-03T09:40:31.885Z",
+    "updatedAt": "2026-06-03T09:40:31.885Z"
   },
   "message": "Conversation created successfully",
   "statusCode": 201
@@ -3061,11 +3061,11 @@
 ### Test 32: Get Conversation Messages
 
 - **Method:** GET
-- **Endpoint:** /api/chat/conversations/6ce480c9-fd87-46fc-af4d-0482d4870d07
+- **Endpoint:** /api/chat/conversations/4fb134ba-60db-4898-a58c-daab86c4df11
 - **Description:** Retrieve messages for a single conversation
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 6835ms
+- **Response Time:** 4423ms
 
 - **Response:** ```json
 {
@@ -3073,14 +3073,14 @@
   "data": {
     "messages": [],
     "conversation": {
-      "id": "6ce480c9-fd87-46fc-af4d-0482d4870d07",
+      "id": "4fb134ba-60db-4898-a58c-daab86c4df11",
       "participantIds": [
-        "a8815e1b-f64a-44e9-99bc-1138631a4091",
-        "e0810b03-7b47-4a07-b329-2af44d42e082"
+        "876cb23d-279e-4a8d-a4d2-040b09ecacf6",
+        "b5eb79e5-fbd5-4ee6-bf40-4f354ccb218a"
       ],
       "lastMessageAt": null,
-      "createdAt": "2026-06-03T08:47:33.909Z",
-      "updatedAt": "2026-06-03T08:47:33.909Z"
+      "createdAt": "2026-06-03T09:40:31.885Z",
+      "updatedAt": "2026-06-03T09:40:31.885Z"
     },
     "pagination": {
       "page": 1,
@@ -3104,18 +3104,18 @@
 - **Description:** Post a message into an existing chat conversation
 - **Status:** ✅ PASSED
 - **Status Code:** 201
-- **Response Time:** 4228ms
+- **Response Time:** 3859ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
-    "id": "f0d74402-55c8-4932-876b-38d1435369cc",
-    "conversationId": "6ce480c9-fd87-46fc-af4d-0482d4870d07",
-    "senderId": "a8815e1b-f64a-44e9-99bc-1138631a4091",
+    "id": "6f18213a-d3e9-4fc0-9593-1876fe6bd63c",
+    "conversationId": "4fb134ba-60db-4898-a58c-daab86c4df11",
+    "senderId": "b5eb79e5-fbd5-4ee6-bf40-4f354ccb218a",
     "content": "Test message",
     "isRead": false,
-    "createdAt": "2026-06-03T08:47:43.642Z"
+    "createdAt": "2026-06-03T09:40:38.991Z"
   },
   "message": "Message sent successfully",
   "statusCode": 201
@@ -3132,19 +3132,19 @@
 - **Description:** Add a review for a hall or service provider
 - **Status:** ✅ PASSED
 - **Status Code:** 201
-- **Response Time:** 6505ms
+- **Response Time:** 4165ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
-    "id": "7509f072-eda8-492a-a261-d4aeee4397df",
-    "userId": "a8815e1b-f64a-44e9-99bc-1138631a4091",
-    "hallId": "a777510c-9b65-496e-9771-1f7af1faa05d",
+    "id": "8362835e-16c6-4e99-8cff-8b07e454b40a",
+    "userId": "b5eb79e5-fbd5-4ee6-bf40-4f354ccb218a",
+    "hallId": "4d706dcf-9b7f-4012-9b02-ddc4c884a141",
     "serviceProviderId": null,
     "rating": 5,
     "comment": "Great venue!",
-    "createdAt": "2026-06-03T08:47:49.981Z"
+    "createdAt": "2026-06-03T09:40:43.057Z"
   },
   "message": "Review posted successfully",
   "statusCode": 201
@@ -3161,7 +3161,7 @@
 - **Description:** Retrieve invitations for the logged-in user
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 2905ms
+- **Response Time:** 2682ms
 
 - **Response:** ```json
 {
@@ -3190,7 +3190,7 @@
 - **Description:** Invite a guest to a booking
 - **Status:** ✅ PASSED
 - **Status Code:** 201
-- **Response Time:** 3327ms
+- **Response Time:** 3432ms
 
 - **Response:** ```json
 {
@@ -3198,9 +3198,9 @@
   "data": {
     "invitations": [
       {
-        "bookingId": "59526fd9-a5c1-4a5a-807f-61e201bbbad6",
+        "bookingId": "01b0f4f9-d0a0-4ad0-8ba6-f11287374f3e",
         "guestEmail": "guest@example.com",
-        "invitedByUserId": "a8815e1b-f64a-44e9-99bc-1138631a4091",
+        "invitedByUserId": "b5eb79e5-fbd5-4ee6-bf40-4f354ccb218a",
         "status": "PENDING",
         "guestCount": 2,
         "message": "Please join our wedding"
@@ -3223,7 +3223,7 @@
 - **Description:** Get notifications for the authenticated user
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 2331ms
+- **Response Time:** 2370ms
 
 - **Response:** ```json
 {
@@ -3253,7 +3253,7 @@
 - **Description:** Retrieve payments for the authenticated user
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 3243ms
+- **Response Time:** 5064ms
 
 - **Response:** ```json
 {
@@ -3282,7 +3282,7 @@
 - **Description:** Create a payment and invoice record
 - **Status:** ✅ PASSED
 - **Status Code:** 400
-- **Response Time:** 3482ms
+- **Response Time:** 3074ms
 
 - **Response:** ```json
 {
@@ -3303,23 +3303,23 @@
 - **Description:** Simulate Stripe payment creation for booking advance payments
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 4126ms
+- **Response Time:** 3302ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
     "payment": {
-      "id": "a18ac6ca-37fd-4355-9ee8-3433f0515bba",
-      "bookingId": "59526fd9-a5c1-4a5a-807f-61e201bbbad6",
-      "userId": "a8815e1b-f64a-44e9-99bc-1138631a4091",
+      "id": "17b3da21-1555-44ea-b3a7-fde22d265dd0",
+      "bookingId": "01b0f4f9-d0a0-4ad0-8ba6-f11287374f3e",
+      "userId": "b5eb79e5-fbd5-4ee6-bf40-4f354ccb218a",
       "amount": "3187.5",
       "paymentType": "ADVANCE",
       "paymentMethod": "STRIPE",
       "status": "ADVANCE_PAID",
-      "stripePaymentId": "pi_demo_1780476491451",
-      "createdAt": "2026-06-03T08:48:10.740Z",
-      "updatedAt": "2026-06-03T08:48:10.740Z"
+      "stripePaymentId": "pi_demo_1780479664708",
+      "createdAt": "2026-06-03T09:41:03.818Z",
+      "updatedAt": "2026-06-03T09:41:03.818Z"
     },
     "status": "success",
     "message": "Payment processed successfully"
@@ -3339,7 +3339,7 @@
 - **Description:** Retrieve demo payment status from Stripe flow
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 20ms
+- **Response Time:** 36ms
 
 - **Response:** ```json
 {
@@ -3359,20 +3359,20 @@
 ### Test 42: Cancel Booking
 
 - **Method:** DELETE
-- **Endpoint:** /api/bookings/59526fd9-a5c1-4a5a-807f-61e201bbbad6
+- **Endpoint:** /api/bookings/01b0f4f9-d0a0-4ad0-8ba6-f11287374f3e
 - **Description:** Cancel an existing booking
 - **Status:** ✅ PASSED
 - **Status Code:** 200
-- **Response Time:** 4000ms
+- **Response Time:** 4018ms
 
 - **Response:** ```json
 {
   "success": true,
   "data": {
-    "id": "59526fd9-a5c1-4a5a-807f-61e201bbbad6",
-    "bookingNumber": "BK1780476422811243",
-    "hallId": "a777510c-9b65-496e-9771-1f7af1faa05d",
-    "userId": "a8815e1b-f64a-44e9-99bc-1138631a4091",
+    "id": "01b0f4f9-d0a0-4ad0-8ba6-f11287374f3e",
+    "bookingNumber": "BK1780479608515138",
+    "hallId": "4d706dcf-9b7f-4012-9b02-ddc4c884a141",
+    "userId": "b5eb79e5-fbd5-4ee6-bf40-4f354ccb218a",
     "eventDate": "2026-12-31T00:00:00.000Z",
     "eventTime": "18:00",
     "numberOfGuests": 150,
@@ -3382,8 +3382,8 @@
     "finalAmount": "9562.5",
     "status": "CANCELLED",
     "paymentStatus": "ADVANCE_PAID",
-    "createdAt": "2026-06-03T08:47:01.849Z",
-    "updatedAt": "2026-06-03T08:47:01.849Z"
+    "createdAt": "2026-06-03T09:40:07.659Z",
+    "updatedAt": "2026-06-03T09:40:07.659Z"
   },
   "message": "Booking cancelled successfully",
   "statusCode": 200
@@ -3487,4 +3487,4 @@ npx ts-node api.test.ts
 
 ---
 
-**Report Generated:** 6/3/2026, 1:48:16 PM
+**Report Generated:** 6/3/2026, 2:41:09 PM

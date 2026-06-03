@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export interface ApiResponse<T = any> {
   success: boolean;
@@ -49,6 +49,15 @@ export function errorResponse(
 /**
  * Handle API errors
  */
+export async function parseRequestBody(request: NextRequest): Promise<any> {
+  try {
+    return await request.json();
+  } catch (error: any) {
+    console.error('[JSON Parse Error]', error);
+    throw new Error('Invalid JSON body');
+  }
+}
+
 export function handleApiError(error: any, defaultMessage: string = 'Internal Server Error'): NextResponse<ApiResponse<null>> {
   console.error('[API Error]', error);
 
@@ -62,6 +71,10 @@ export function handleApiError(error: any, defaultMessage: string = 'Internal Se
 
   if (error?.message?.includes('ValidationError')) {
     return errorResponse(error.message, 400, 'Validation error');
+  }
+
+  if (error?.message?.includes('Invalid JSON')) {
+    return errorResponse('Invalid JSON payload', 400, 'Invalid request body');
   }
 
   return errorResponse(defaultMessage, 500);
