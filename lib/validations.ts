@@ -192,8 +192,192 @@ export const bookingFilterSchema = z.object({
   limit: z.number().min(1).max(100).default(10),
 });
 
+// ==================== HALL STATUS ENUM ====================
+
+export enum HallStatus {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+}
+
+// ==================== HALL STATUS UPDATE SCHEMA ====================
+
+export const updateHallStatusSchema = z.object({
+  status: z.enum(['PENDING', 'APPROVED', 'REJECTED']),
+  reason: z.string().optional(),
+});
+
+// ==================== EXTENDED HALL SEARCH SCHEMA ====================
+
+export const extendedHallSearchSchema = z.object({
+  search: z.string().optional(),
+  district: z.string().optional(),
+  minCapacity: z.number().min(0).optional(),
+  maxCapacity: z.number().min(0).optional(),
+  status: z.enum(['PENDING', 'APPROVED', 'REJECTED']).optional(),
+  minPrice: z.number().min(0).optional(),
+  maxPrice: z.number().min(0).optional(),
+  sortBy: z.enum(['price', 'capacity', 'createdAt', 'rating']).default('createdAt'),
+  order: z.enum(['asc', 'desc']).default('desc'),
+  page: z.number().min(1).default(1),
+  limit: z.number().min(1).max(100).default(10),
+});
+
+// ==================== REVIEW LIST SCHEMA ====================
+
+export const reviewListSchema = z.object({
+  page: z.number().min(1).default(1),
+  limit: z.number().min(1).max(100).default(10),
+});
+
+// ==================== HALL APPROVAL SCHEMAS ====================
+
+export const approveHallRequestSchema = z.object({
+  adminComment: z.string().optional(),
+});
+
+export const rejectHallRequestSchema = z.object({
+  adminComment: z.string().min(1, 'Rejection reason is required'),
+});
+
+// ==================== CALENDAR SCHEMAS ====================
+
+export const addCalendarSchema = z.object({
+  date: z.string().refine((date) => !isNaN(Date.parse(date)), 'Invalid date format'),
+  isAvailable: z.boolean().default(true),
+  notes: z.string().optional(),
+});
+
+export const updateCalendarSchema = z.object({
+  isAvailable: z.boolean().optional(),
+  notes: z.string().optional(),
+});
+
+// ==================== OWNER MANAGEMENT SCHEMAS ====================
+
+export const createOwnerSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  phone: z.string().min(10, 'Phone must be at least 10 digits'),
+  firstName: z.string().min(2, 'First name is required'),
+  lastName: z.string().min(2, 'Last name is required'),
+});
+
+export const updateOwnerSchema = z.object({
+  firstName: z.string().min(2).optional(),
+  lastName: z.string().min(2).optional(),
+  phone: z.string().min(10).optional(),
+});
+
+// ==================== OWNER ASSIGNMENT SCHEMAS ====================
+
+export const assignOwnerSchema = z.object({
+  hallId: z.string().min(1, 'Hall ID is required'),
+  ownerId: z.string().min(1, 'Owner ID is required'),
+});
+
+// ==================== IMAGE UPLOAD SCHEMAS ====================
+
+export const uploadImageSchema = z.object({
+  file: z.any(),
+  imageType: z.enum(['HALL', 'SERVICE', 'PROFILE']),
+});
+
+export const addHallImageSchema = z.object({
+  imageUrl: z.string().url('Invalid image URL'),
+  isMainImage: z.boolean().default(false),
+  displayOrder: z.number().min(0).default(0),
+});
+
+export const updateHallImageSchema = z.object({
+  isMainImage: z.boolean().optional(),
+  displayOrder: z.number().min(0).optional(),
+});
+
+// ==================== SINGER SCHEMAS ====================
+
+export const createSingerSchema = z.object({
+  name: z.string().min(1, 'Singer name is required'),
+  phone: z.string().optional(),
+  description: z.string().optional(),
+  imageUrl: z.string().optional(),
+  price: z.number().min(0, 'Price must be positive'),
+  status: z.enum(['AVAILABLE', 'UNAVAILABLE', 'INACTIVE']).default('AVAILABLE'),
+});
+
+export const updateSingerSchema = createSingerSchema.partial();
+
+// ==================== CAR SCHEMAS ====================
+
+export const createCarSchema = z.object({
+  name: z.string().min(1, 'Car name is required'),
+  model: z.string().min(1, 'Model is required'),
+  imageUrl: z.string().optional(),
+  price: z.number().min(0, 'Price must be positive'),
+  description: z.string().optional(),
+  status: z.enum(['AVAILABLE', 'UNAVAILABLE', 'INACTIVE']).default('AVAILABLE'),
+});
+
+export const updateCarSchema = createCarSchema.partial();
+
+// ==================== MENU SCHEMAS ====================
+
+export const createMenuSchema = z.object({
+  hallId: z.string().min(1, 'Hall ID is required'),
+  name: z.string().min(1, 'Menu name is required'),
+  description: z.string().optional(),
+  price: z.number().min(0, 'Price must be positive'),
+  vegetarianPrice: z.number().min(0).optional(),
+  servingSize: z.number().min(1).optional(),
+  items: z.array(z.object({
+    itemName: z.string().min(1),
+    description: z.string().optional(),
+    category: z.string().optional(),
+    isVegetarian: z.boolean().default(false),
+  })).optional(),
+});
+
+export const updateMenuSchema = createMenuSchema.partial().omit({ hallId: true });
+
+export const addMenuItemSchema = z.object({
+  itemName: z.string().min(1, 'Item name is required'),
+  description: z.string().optional(),
+  category: z.string().optional(),
+  isVegetarian: z.boolean().default(false),
+});
+
+// ==================== REGION & DISTRICT SCHEMAS ====================
+
+export const createRegionSchema = z.object({
+  name: z.string().min(1, 'Region name is required'),
+  code: z.string().optional(),
+  description: z.string().optional(),
+});
+
+export const createDistrictSchema = z.object({
+  regionId: z.string().min(1, 'Region ID is required'),
+  name: z.string().min(1, 'District name is required'),
+  code: z.string().optional(),
+  description: z.string().optional(),
+});
+
+// ==================== PAGINATION SCHEMA ====================
+
+export const paginationSchema = z.object({
+  page: z.number().min(1).default(1),
+  limit: z.number().min(1).max(100).default(10),
+});
+
+// ==================== TYPE EXPORTS ====================
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type CreateHallInput = z.infer<typeof createHallSchema>;
 export type CreateBookingInput = z.infer<typeof createBookingSchema>;
 export type HallSearchInput = z.infer<typeof hallSearchSchema>;
+export type UpdateHallStatusInput = z.infer<typeof updateHallStatusSchema>;
+export type ExtendedHallSearchInput = z.infer<typeof extendedHallSearchSchema>;
+export type ReviewListInput = z.infer<typeof reviewListSchema>;
+export type CreateSingerInput = z.infer<typeof createSingerSchema>;
+export type CreateCarInput = z.infer<typeof createCarSchema>;
+export type CreateMenuInput = z.infer<typeof createMenuSchema>;
+export type CreateOwnerInput = z.infer<typeof createOwnerSchema>;

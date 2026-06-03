@@ -14,6 +14,11 @@ const publicRoutes = [
   '/api/health',
   '/api/docs',
   '/swagger',
+  '/api/regions',
+  '/api/districts',
+  '/api/singers',
+  '/api/cars',
+  '/api/menus',
 ];
 
 async function verifyAccessToken(token: string) {

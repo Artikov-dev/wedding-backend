@@ -214,6 +214,22 @@ const modelTables: Record<string, string> = {
   conversation: '"Conversation"',
   invitation: '"Invitation"',
   auditLog: '"AuditLog"',
+  // New models
+  hallApprovalRequest: '"HallApprovalRequest"',
+  hallCalendar: '"HallCalendar"',
+  hallOwner: '"HallOwner"',
+  hallImage: '"HallImage"',
+  serviceImage: '"ServiceImage"',
+  profileImage: '"ProfileImage"',
+  singer: '"Singer"',
+  car: '"Car"',
+  menu: '"Menu"',
+  menuItem: '"MenuItem"',
+  region: '"Region"',
+  district: '"District"',
+  dailyMetric: '"DailyMetric"',
+  ownerAnalytic: '"OwnerAnalytic"',
+  adminAnalytic: '"AdminAnalytic"',
 };
 
 interface RelationDef {
@@ -239,6 +255,10 @@ const modelRelations: Record<string, Record<string, RelationDef>> = {
     bookings: { model: 'booking', type: 'many', foreignKey: 'hallId', remoteKey: 'id', localKey: 'id' },
     reviews: { model: 'review', type: 'many', foreignKey: 'hallId', remoteKey: 'id', localKey: 'id' },
     favorites: { model: 'favorite', type: 'many', foreignKey: 'hallId', remoteKey: 'id', localKey: 'id' },
+    images: { model: 'hallImage', type: 'many', foreignKey: 'hallId', remoteKey: 'id', localKey: 'id' },
+    owners: { model: 'hallOwner', type: 'many', foreignKey: 'hallId', remoteKey: 'id', localKey: 'id' },
+    calendars: { model: 'hallCalendar', type: 'many', foreignKey: 'hallId', remoteKey: 'id', localKey: 'id' },
+    menus: { model: 'menu', type: 'many', foreignKey: 'hallId', remoteKey: 'id', localKey: 'id' },
   },
   serviceBooking: {
     serviceProvider: { model: 'serviceProvider', type: 'one', foreignKey: 'serviceProviderId', remoteKey: 'id' },
@@ -273,6 +293,7 @@ const modelRelations: Record<string, Record<string, RelationDef>> = {
   },
   serviceProvider: {
     user: { model: 'user', type: 'one', foreignKey: 'userId', remoteKey: 'id' },
+    images: { model: 'serviceImage', type: 'many', foreignKey: 'serviceProviderId', remoteKey: 'id', localKey: 'id' },
   },
   notification: {
     user: { model: 'user', type: 'one', foreignKey: 'userId', remoteKey: 'id' },
@@ -285,6 +306,49 @@ const modelRelations: Record<string, Record<string, RelationDef>> = {
   },
   address: {
     user: { model: 'user', type: 'one', foreignKey: 'userId', remoteKey: 'id' },
+  },
+  // New models
+  hallApprovalRequest: {
+    hall: { model: 'hallProfile', type: 'one', foreignKey: 'hallId', remoteKey: 'id' },
+    owner: { model: 'user', type: 'one', foreignKey: 'ownerId', remoteKey: 'id' },
+    approvedByUser: { model: 'user', type: 'one', foreignKey: 'approvedBy', remoteKey: 'id' },
+  },
+  hallCalendar: {
+    hall: { model: 'hallProfile', type: 'one', foreignKey: 'hallId', remoteKey: 'id' },
+  },
+  hallOwner: {
+    hall: { model: 'hallProfile', type: 'one', foreignKey: 'hallId', remoteKey: 'id' },
+    owner: { model: 'user', type: 'one', foreignKey: 'ownerId', remoteKey: 'id' },
+    assignedByUser: { model: 'user', type: 'one', foreignKey: 'assignedBy', remoteKey: 'id' },
+  },
+  hallImage: {
+    hall: { model: 'hallProfile', type: 'one', foreignKey: 'hallId', remoteKey: 'id' },
+  },
+  serviceImage: {
+    provider: { model: 'serviceProvider', type: 'one', foreignKey: 'serviceProviderId', remoteKey: 'id' },
+  },
+  profileImage: {
+    user: { model: 'user', type: 'one', foreignKey: 'userId', remoteKey: 'id' },
+  },
+  singer: {},
+  car: {},
+  menu: {
+    hall: { model: 'hallProfile', type: 'one', foreignKey: 'hallId', remoteKey: 'id' },
+    items: { model: 'menuItem', type: 'many', foreignKey: 'menuId', remoteKey: 'id', localKey: 'id' },
+  },
+  menuItem: {
+    menu: { model: 'menu', type: 'one', foreignKey: 'menuId', remoteKey: 'id' },
+  },
+  region: {},
+  district: {
+    region: { model: 'region', type: 'one', foreignKey: 'regionId', remoteKey: 'id' },
+  },
+  dailyMetric: {},
+  ownerAnalytic: {
+    owner: { model: 'user', type: 'one', foreignKey: 'ownerId', remoteKey: 'id' },
+  },
+  adminAnalytic: {
+    topRatedHall: { model: 'hallProfile', type: 'one', foreignKey: 'topRatedHall', remoteKey: 'id' },
   },
 };
 
