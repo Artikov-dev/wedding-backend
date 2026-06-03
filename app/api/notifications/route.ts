@@ -1,10 +1,28 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
+import { verifyToken } from '@/lib/auth';
 import { successResponse, errorResponse, handleApiError } from '@/lib/api-response';
+
+const getUserIdFromRequest = (request: NextRequest): string | null => {
+  let userId = request.headers.get('x-user-id');
+
+  if (!userId) {
+    const authHeader = request.headers.get('authorization');
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    if (token) {
+      const decoded = verifyToken(token);
+      if (decoded?.userId) {
+        userId = decoded.userId;
+      }
+    }
+  }
+
+  return userId;
+};
 
 export async function GET(request: NextRequest) {
   try {
-    const userId = request.headers.get('x-user-id');
+    const userId = getUserIdFromRequest(request);
 
     if (!userId) {
       return errorResponse('Unauthorized', 401, 'User ID not found');

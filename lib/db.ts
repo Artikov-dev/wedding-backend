@@ -12,11 +12,33 @@ const pool = new Pool({
   ssl: isLocalDatabase ? undefined : { rejectUnauthorized: false },
   max: 10,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  connectionTimeoutMillis: 10000,
 });
 
+const MAX_QUERY_RETRIES = 2;
+const QUERY_RETRY_DELAY_MS = 500;
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export async function query<T extends any[] | QueryResultRow | Submittable = any>(text: string, params: unknown[] = []): Promise<QueryResult<T>> {
-  return pool.query<T>(text, params);
+  let attempt = 0;
+
+  while (true) {
+    try {
+      return await pool.query<T>(text, params);
+    } catch (error: any) {
+      attempt += 1;
+      const message = String(error?.message || '');
+      const retryable = /timeout exceeded|Connection terminated|connect ECONNRESET|connection timeout/i.test(message);
+      if (attempt <= MAX_QUERY_RETRIES && retryable) {
+        await sleep(QUERY_RETRY_DELAY_MS);
+        continue;
+      }
+      throw error;
+    }
+  }
 }
 
 export async function queryOne<T extends any[] | QueryResultRow | Submittable = any>(text: string, params: unknown[] = []): Promise<T | null> {
