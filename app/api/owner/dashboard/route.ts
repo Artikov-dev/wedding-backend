@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     // Get owner's halls
     const halls = await prisma.hallProfile.findMany({
       where: { userId },
-      select: { id: true, name: true, capacity: true, pricePerPlate: true },
+      select: { id: true, name: true, capacity: true, pricePerPlate: true, ratings: true },
     });
 
     const hallIds = halls.map((h) => h.id);
@@ -99,7 +99,9 @@ export async function GET(request: NextRequest) {
         totalRevenue: Number(totalRevenue),
         monthlyRevenue: Number(monthlyRevenue),
         averageRating:
-          halls.reduce((sum, h) => sum + 0, 0) / halls.length || 0,
+          halls.length > 0
+            ? halls.reduce((sum, h) => sum + Number(h.ratings || 0), 0) / halls.length
+            : 0,
         halls,
       };
 

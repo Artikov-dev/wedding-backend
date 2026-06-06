@@ -43,32 +43,15 @@ export async function POST(request: NextRequest) {
     const invitations = [];
 
     for (const email of guestEmails) {
-      // Find user by email (or create if doesn't exist - optional flow)
-      let invitedUser = await prisma.user.findUnique({
-        where: { email },
-      });
+      const invitedUser = await prisma.user.findUnique({ where: { email } });
 
-      if (!invitedUser) {
-        // For now, we'll create a pending invitation without a user
-        // In production, you might handle this differently
-        const invitation = {
-          bookingId,
-          guestEmail: email,
-          invitedByUserId: userId,
-          status: 'PENDING',
-          guestCount: guestCount || 1,
-          message,
-        };
-        invitations.push(invitation);
-        continue;
-      }
-
-      // Create invitation for existing user
+      // Always save to DB — use guestEmail for unregistered guests
       const invitation = await prisma.invitation.create({
         data: {
           bookingId,
-          userId: invitedUser.id,
+          userId: invitedUser?.id ?? null,
           invitedByUserId: userId,
+          guestEmail: email,
           guestCount: guestCount || 1,
           message,
         },
@@ -76,16 +59,17 @@ export async function POST(request: NextRequest) {
 
       invitations.push(invitation);
 
-      // Create notification for invited user
-      await prisma.notification.create({
-        data: {
-          userId: invitedUser.id,
-          type: 'INVITATION_RECEIVED',
-          title: 'Wedding Invitation',
-          message: `You have been invited to a wedding event: ${message || 'Join us for a celebration!'}`,
-          relatedId: invitation.id,
-        },
-      });
+      if (invitedUser) {
+        await prisma.notification.create({
+          data: {
+            userId: invitedUser.id,
+            type: 'INVITATION_RECEIVED',
+            title: 'Wedding Invitation',
+            message: `You have been invited to a wedding event: ${message || 'Join us for a celebration!'}`,
+            relatedId: invitation.id,
+          },
+        });
+      }
     }
 
     return successResponse(

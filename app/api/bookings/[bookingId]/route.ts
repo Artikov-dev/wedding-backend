@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
-import { updateBookingStatusSchema } from '@/lib/validations';
+import { updateBookingSchema } from '@/lib/validations';
 import { successResponse, errorResponse, handleApiError } from '@/lib/api-response';
 
 export async function GET(
@@ -98,12 +98,19 @@ export async function PUT(
 
     const body = await request.json();
 
+    const validationResult = updateBookingSchema.safeParse(body);
+    if (!validationResult.success) {
+      return errorResponse(
+        validationResult.error.errors[0].message,
+        400,
+        'Validation error'
+      );
+    }
+
     // Update booking
     const updatedBooking = await prisma.booking.update({
       where: { id: bookingId },
-      data: {
-        ...body,
-      },
+      data: validationResult.data,
       include: {
         hall: true,
         user: true,

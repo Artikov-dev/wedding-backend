@@ -73,7 +73,7 @@ export function verifyToken(token: string): JWTPayload | null {
 export async function verifyRefreshToken(token: string): Promise<JWTPayload | null> {
   try {
     const payload = jwt.verify(token, JWT_SECRET) as JWTPayload;
-    
+
     const refreshTokenRecord = await prisma.refreshToken.findUnique({
       where: { token },
     });
@@ -116,11 +116,18 @@ export async function verifyOTP(userId: string, code: string, purpose: string): 
 }
 
 /**
+ * Revoke refresh token
+ */
+export async function revokeRefreshToken(token: string): Promise<void> {
+  await prisma.refreshToken.deleteMany({ where: { token } });
+}
+
+/**
  * Create OTP
  */
 export async function createOTP(userId: string, purpose: string): Promise<string> {
   const code = generateOTP();
-  
+
   // Delete existing OTP if any
   await prisma.oTP.deleteMany({ where: { userId } });
 

@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
         amount,
         paymentType: 'ADVANCE',
         paymentMethod: 'STRIPE',
-        status: 'ADVANCE_PAID',
+        status: 'COMPLETED',
         stripePaymentId: `pi_demo_${Date.now()}`,
       },
     });

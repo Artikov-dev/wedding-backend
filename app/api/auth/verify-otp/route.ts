@@ -8,7 +8,6 @@ export async function POST(request: NextRequest) {
   try {
     const body = await parseRequestBody(request);
 
-    // Validate input
     const validationResult = verifyOtpSchema.safeParse(body);
     if (!validationResult.success) {
       return errorResponse(
@@ -18,39 +17,43 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { userId, code, purpose } = validationResult.data;
+    const { email, code, purpose } = validationResult.data;
 
-    // Verify OTP
-    const isValid = await verifyOTP(userId, code, purpose);
+    // Resolve userId from email
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      return errorResponse('User not found', 404, 'User does not exist');
+    }
+
+    // Default purpose for email verification flow
+    const otpPurpose = purpose ?? 'email_verification';
+
+    const isValid = await verifyOTP(user.id, code, otpPurpose);
     if (!isValid) {
       return errorResponse('Invalid or expired OTP', 401, 'OTP verification failed');
     }
 
-    // Update user based on purpose
     let updateData: any = {};
-    if (purpose === 'email_verification') {
+    if (otpPurpose === 'email_verification') {
       updateData.isEmailVerified = true;
-    } else if (purpose === 'phone_verification') {
+    } else if (otpPurpose === 'phone_verification') {
       updateData.isPhoneVerified = true;
     }
 
-    const user = await prisma.user.update({
-      where: { id: userId },
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
       data: updateData,
     });
 
-    // Delete OTP
-    await prisma.oTP.delete({
-      where: { userId },
-    });
+    await prisma.oTP.delete({ where: { userId: user.id } });
 
     return successResponse(
       {
         user: {
-          id: user.id,
-          email: user.email,
-          isEmailVerified: user.isEmailVerified,
-          isPhoneVerified: user.isPhoneVerified,
+          id: updatedUser.id,
+          email: updatedUser.email,
+          isEmailVerified: updatedUser.isEmailVerified,
+          isPhoneVerified: updatedUser.isPhoneVerified,
         },
       },
       'OTP verified successfully',

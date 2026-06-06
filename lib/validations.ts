@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-// ==================== AUTH SCHEMAS ====================
 
 export const registerSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -17,9 +16,9 @@ export const loginSchema = z.object({
 });
 
 export const verifyOtpSchema = z.object({
-  userId: z.string().min(1, 'User ID is required'),
+  email: z.string().email('Invalid email address'),
   code: z.string().min(6, 'OTP must be 6 digits'),
-  purpose: z.enum(['email_verification', 'phone_verification', 'password_reset']),
+  purpose: z.enum(['email_verification', 'phone_verification', 'password_reset']).optional(),
 });
 
 export const forgotPasswordSchema = z.object({
@@ -27,7 +26,7 @@ export const forgotPasswordSchema = z.object({
 });
 
 export const resetPasswordSchema = z.object({
-  userId: z.string().min(1, 'User ID is required'),
+  email: z.string().email('Invalid email address'),
   code: z.string().min(6, 'OTP must be 6 digits'),
   newPassword: z.string().min(8, 'Password must be at least 8 characters'),
 });

@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
-import { verifyRefreshToken, generateToken, generateRefreshToken } from '@/lib/auth';
+import { verifyRefreshToken, generateToken, generateRefreshToken, revokeRefreshToken } from '@/lib/auth';
 import { refreshTokenSchema } from '@/lib/validations';
 import { parseRequestBody, successResponse, errorResponse, handleApiError } from '@/lib/api-response';
 
@@ -8,7 +8,6 @@ export async function POST(request: NextRequest) {
   try {
     const body = await parseRequestBody(request);
 
-    // Validate input
     const validationResult = refreshTokenSchema.safeParse(body);
     if (!validationResult.success) {
       return errorResponse(
@@ -34,6 +33,9 @@ export async function POST(request: NextRequest) {
     if (!user || user.status !== 'ACTIVE') {
       return errorResponse('User not found or inactive', 401, 'Invalid user');
     }
+
+    // SECURITY: Revoke old refresh token before issuing new one (token rotation)
+    await revokeRefreshToken(refreshToken);
 
     // Generate new tokens
     const newToken = generateToken({

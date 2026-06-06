@@ -8,7 +8,6 @@ export async function POST(request: NextRequest) {
   try {
     const body = await parseRequestBody(request);
 
-    // Validate input
     const validationResult = resetPasswordSchema.safeParse(body);
     if (!validationResult.success) {
       return errorResponse(
@@ -18,27 +17,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { userId, code, newPassword } = validationResult.data;
+    const { email, code, newPassword } = validationResult.data;
 
-    // Verify OTP
-    const isValid = await verifyOTP(userId, code, 'password_reset');
+    // Resolve userId from email
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      return errorResponse('User not found', 404, 'User does not exist');
+    }
+
+    const isValid = await verifyOTP(user.id, code, 'password_reset');
     if (!isValid) {
       return errorResponse('Invalid or expired OTP', 401, 'OTP verification failed');
     }
 
-    // Hash new password
     const hashedPassword = await hashPassword(newPassword);
 
-    // Update password
     await prisma.user.update({
-      where: { id: userId },
+      where: { id: user.id },
       data: { password: hashedPassword },
     });
 
-    // Delete OTP
-    await prisma.oTP.delete({
-      where: { userId },
-    });
+    await prisma.oTP.delete({ where: { userId: user.id } });
 
     return successResponse(
       { message: 'Password reset successfully' },

@@ -45,8 +45,8 @@ export async function POST(request: NextRequest) {
       return errorResponse('You do not have permission to make payment for this booking', 403, 'Forbidden');
     }
 
-    // Validate payment amount
-    if (paymentType === 'ADVANCE' && amount !== booking.advanceAmount) {
+    // Validate payment amount (Prisma returns Decimal — convert to Number for comparison)
+    if (paymentType === 'ADVANCE' && amount !== Number(booking.advanceAmount)) {
       return errorResponse(
         `Advance amount should be ${booking.advanceAmount}`,
         400,
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (paymentType === 'FINAL' && amount !== booking.finalAmount) {
+    if (paymentType === 'FINAL' && amount !== Number(booking.finalAmount)) {
       return errorResponse(
         `Final amount should be ${booking.finalAmount}`,
         400,

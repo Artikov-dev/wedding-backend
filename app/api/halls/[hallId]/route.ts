@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
+import { updateHallSchema } from '@/lib/validations';
 import { successResponse, errorResponse, handleApiError } from '@/lib/api-response';
 
 export async function GET(
@@ -76,12 +77,19 @@ export async function PUT(
 
     const body = await request.json();
 
+    const validationResult = updateHallSchema.safeParse(body);
+    if (!validationResult.success) {
+      return errorResponse(
+        validationResult.error.errors[0].message,
+        400,
+        'Validation error'
+      );
+    }
+
     // Update hall
     const updatedHall = await prisma.hallProfile.update({
       where: { id: hallId },
-      data: {
-        ...body,
-      },
+      data: validationResult.data,
       include: {
         amenities: true,
         services: true,

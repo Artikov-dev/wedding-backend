@@ -3,6 +3,7 @@ import { prisma } from '@/lib/db';
 import { hashPassword, generateToken, generateRefreshToken, createOTP } from '@/lib/auth';
 import { registerSchema } from '@/lib/validations';
 import { parseRequestBody, successResponse, errorResponse, handleApiError } from '@/lib/api-response';
+import { sendOTPEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
@@ -61,8 +62,9 @@ export async function POST(request: NextRequest) {
     });
     const refreshToken = await generateRefreshToken(user.id);
 
-    // TODO: Send OTP email
-    console.log(`[Auth] OTP for ${email}: ${otp}`);
+    await sendOTPEmail(email, otp, 'email_verification').catch((err) =>
+      console.error('[Auth] OTP email send failed:', err)
+    );
 
     return successResponse(
       {
