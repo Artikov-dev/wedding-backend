@@ -17,8 +17,8 @@ export async function GET(request: NextRequest) {
     const queryParams = {
       status: (searchParams.get('status') as any) || undefined,
       paymentStatus: (searchParams.get('paymentStatus') as any) || undefined,
-      startDate: searchParams.get('startDate') ? new Date(searchParams.get('startDate')!) : undefined,
-      endDate: searchParams.get('endDate') ? new Date(searchParams.get('endDate')!) : undefined,
+      startDate: searchParams.get('startDate') || undefined,
+      endDate: searchParams.get('endDate') || undefined,
       page: parseInt(searchParams.get('page') || '1'),
       limit: parseInt(searchParams.get('limit') || '10'),
     };
@@ -38,10 +38,15 @@ export async function GET(request: NextRequest) {
     // Build where clause based on user role
     const where: any = {};
 
-    if (userRole === 'CUSTOMER') {
+    if (userRole === 'ADMIN') {
+      // Admin sees all bookings — no filter
+    } else if (userRole === 'CUSTOMER') {
       where.userId = userId;
     } else if (userRole === 'HALL_OWNER') {
       where.hall = { userId };
+    } else {
+      // Default: user sees own bookings
+      where.userId = userId;
     }
 
     if (status) where.status = status;

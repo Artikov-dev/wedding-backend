@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
-import { updateBookingSchema } from '@/lib/validations';
+import { updateBookingSchema, updateBookingStatusSchema } from '@/lib/validations';
 import { successResponse, errorResponse, handleApiError } from '@/lib/api-response';
 
 export async function GET(
@@ -97,6 +97,20 @@ export async function PUT(
     }
 
     const body = await request.json();
+
+    // Status update — hall owner or admin can change status
+    if (body.status !== undefined && Object.keys(body).length === 1) {
+      const statusResult = updateBookingStatusSchema.safeParse(body);
+      if (!statusResult.success) {
+        return errorResponse(statusResult.error.errors[0].message, 400, 'Validation error');
+      }
+      const updatedBooking = await prisma.booking.update({
+        where: { id: bookingId },
+        data: { status: statusResult.data.status },
+        include: { hall: true, user: true },
+      });
+      return successResponse(updatedBooking, 'Booking status updated successfully');
+    }
 
     const validationResult = updateBookingSchema.safeParse(body);
     if (!validationResult.success) {
