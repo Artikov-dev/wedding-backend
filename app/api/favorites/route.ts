@@ -23,12 +23,6 @@ export async function GET(request: NextRequest) {
           hall: {
             include: {
               amenities: true,
-              user: {
-                select: {
-                  firstName: true,
-                  lastName: true,
-                },
-              },
             },
           },
         },
