@@ -55,7 +55,7 @@ export async function GET(
     });
 
     const hall = await query<any>(
-      `SELECT id, name, city, "pricePerPlate", "imageUrl" FROM "HallProfile" WHERE id = $1 LIMIT 1`,
+      `SELECT id, name, "pricePerPlate", "imageUrl", capacity, category FROM "HallProfile" WHERE id = $1 LIMIT 1`,
       [booking.hallId]
     );
 
@@ -110,7 +110,7 @@ export async function PUT(
       });
 
       const hall = await query<any>(
-        `SELECT id, name, city FROM "HallProfile" WHERE id = $1 LIMIT 1`,
+        `SELECT id, name, "pricePerPlate", "imageUrl", capacity, category FROM "HallProfile" WHERE id = $1 LIMIT 1`,
         [booking.hallId]
       );
 

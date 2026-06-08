@@ -31,7 +31,10 @@ export async function POST(request: NextRequest) {
       include: { hall: true },
     });
 
-    if (!booking || booking.userId !== userId) {
+    const userRole = request.headers.get('x-user-role');
+    const isAdmin = userRole === 'ADMIN';
+
+    if (!booking || (!isAdmin && booking.userId !== userId)) {
       return errorResponse(
         'Booking not found or permission denied',
         404,
