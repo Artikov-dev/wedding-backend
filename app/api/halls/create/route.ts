@@ -8,8 +8,8 @@ export async function POST(request: NextRequest) {
     const userId = request.headers.get('x-user-id');
     const userRole = request.headers.get('x-user-role');
 
-    if (!userId || userRole !== 'HALL_OWNER') {
-      return errorResponse('Only hall owners can create halls', 403, 'Forbidden');
+    if (!userId || (userRole !== 'HALL_OWNER' && userRole !== 'ADMIN')) {
+      return errorResponse('Only hall owners or admins can create halls', 403, 'Forbidden');
     }
 
     const body = await request.json();
@@ -26,19 +26,22 @@ export async function POST(request: NextRequest) {
 
     const { name, description, category, capacity, pricePerPlate, advancePercentage, imageUrl, amenities } = validationResult.data;
 
-    // Check if user already has a hall profile
+    // Admin can create hall for any user via ownerId body param; owner uses own id
+    const hallOwnerId = (userRole === 'ADMIN' && body.ownerId) ? body.ownerId : userId;
+
+    // Check if target user already has a hall profile
     const existingHall = await prisma.hallProfile.findUnique({
-      where: { userId },
+      where: { userId: hallOwnerId },
     });
 
     if (existingHall) {
-      return errorResponse('You already have a hall profile', 409, 'Hall already exists');
+      return errorResponse('This user already has a hall profile', 409, 'Hall already exists');
     }
 
-    // Create hall
+    // Create hall — admin-created halls are auto-approved
     const hall = await prisma.hallProfile.create({
       data: {
-        userId,
+        userId: hallOwnerId,
         name,
         description,
         category: category || 'STANDARD',
@@ -46,6 +49,7 @@ export async function POST(request: NextRequest) {
         pricePerPlate,
         advancePercentage: advancePercentage || 25,
         imageUrl,
+        approvalStatus: userRole === 'ADMIN' ? 'APPROVED' : 'PENDING',
       },
     });
 

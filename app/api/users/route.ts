@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
-    const role = searchParams.get('role') as any || undefined;
+    const role = searchParams.get('role') || undefined;
     const search = searchParams.get('search') || undefined;
     const skip = (page - 1) * limit;
 
@@ -26,9 +26,9 @@ export async function GET(request: NextRequest) {
     if (role) where.role = role;
     if (search) {
       where.OR = [
-        { firstName: { contains: search, mode: 'insensitive' } },
-        { lastName: { contains: search, mode: 'insensitive' } },
-        { email: { contains: search, mode: 'insensitive' } },
+        { firstName: { contains: search } },
+        { lastName: { contains: search } },
+        { email: { contains: search } },
       ];
     }
 
@@ -42,10 +42,12 @@ export async function GET(request: NextRequest) {
           email: true,
           phone: true,
           role: true,
+          status: true,
           isEmailVerified: true,
-          isActive: true,
-          createdAt: true,
+          isPhoneVerified: true,
           profileImage: true,
+          lastLogin: true,
+          createdAt: true,
         },
         skip,
         take: limit,

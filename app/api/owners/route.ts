@@ -52,7 +52,11 @@ export async function GET(request: NextRequest) {
           lastName: true,
           email: true,
           phone: true,
+          role: true,
           status: true,
+          isEmailVerified: true,
+          profileImage: true,
+          lastLogin: true,
           createdAt: true,
           updatedAt: true,
         },
@@ -63,9 +67,33 @@ export async function GET(request: NextRequest) {
       prisma.user.count({ where }),
     ]);
 
+    // Attach hall info for each owner
+    const ownerIds = owners.map((o: any) => o.id);
+    const halls = ownerIds.length > 0
+      ? await prisma.hallProfile.findMany({
+          where: { userId: { in: ownerIds } },
+          select: {
+            id: true,
+            userId: true,
+            name: true,
+            capacity: true,
+            pricePerPlate: true,
+            approvalStatus: true,
+            ratings: true,
+            totalReviews: true,
+          },
+        })
+      : [];
+
+    const hallMap = new Map(halls.map((h: any) => [h.userId, h]));
+    const ownersWithHall = owners.map((o: any) => ({
+      ...o,
+      hall: hallMap.get(o.id) || null,
+    }));
+
     return successResponse(
       {
-        data: owners,
+        data: ownersWithHall,
         pagination: {
           total,
           page,

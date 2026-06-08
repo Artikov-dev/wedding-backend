@@ -82,9 +82,10 @@ export async function GET(request: NextRequest) {
             select: {
               id: true,
               name: true,
-              city: true,
               pricePerPlate: true,
               imageUrl: true,
+              capacity: true,
+              category: true,
             },
           },
           user: {
