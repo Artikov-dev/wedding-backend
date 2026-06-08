@@ -78,25 +78,8 @@ export async function GET(request: NextRequest) {
       prisma.booking.findMany({
         where,
         include: {
-          hall: {
-            select: {
-              id: true,
-              name: true,
-              pricePerPlate: true,
-              imageUrl: true,
-              capacity: true,
-              category: true,
-            },
-          },
-          user: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              email: true,
-              phone: true,
-            },
-          },
+          hall: true,
+          user: true,
         },
         skip,
         take: limit,

@@ -16,6 +16,7 @@ const publicRoutes = [
   '/api/auth/verify-otp',
   '/api/halls/search',
   '/api/health',
+  '/api/stats',
   '/api/docs',
   '/swagger',
   '/api/regions',

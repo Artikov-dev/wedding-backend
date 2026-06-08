@@ -463,7 +463,7 @@ function createModelHandler(modelName: string) {
   const table = modelTables[modelName];
 
   return {
-    findUnique: async ({ where, include, select }: any) => {
+    findUnique: async ({ where, include, select }: any = {}) => {
       const params: unknown[] = [];
       const selectClause = select ? Object.keys(select).map(quoteIdentifier).join(', ') : '*';
       const whereClause = buildWhereClause(where, params, modelName);
@@ -477,7 +477,7 @@ function createModelHandler(modelName: string) {
       }
       return row;
     },
-    findFirst: async ({ where, include, select, orderBy }: any) => {
+    findFirst: async ({ where, include, select, orderBy }: any = {}) => {
       const params: unknown[] = [];
       const selectClause = select ? Object.keys(select).map(quoteIdentifier).join(', ') : '*';
       const whereClause = buildWhereClause(where, params, modelName);
@@ -492,7 +492,7 @@ function createModelHandler(modelName: string) {
       }
       return row;
     },
-    findMany: async ({ where, include, select, skip, take, orderBy }: any) => {
+    findMany: async ({ where, include, select, skip, take, orderBy }: any = {}) => {
       const params: unknown[] = [];
       const selectClause = select ? Object.keys(select).map(quoteIdentifier).join(', ') : '*';
       const whereClause = buildWhereClause(where, params, modelName);
@@ -507,14 +507,14 @@ function createModelHandler(modelName: string) {
       }
       return rows;
     },
-    count: async ({ where }: any) => {
+    count: async ({ where }: any = {}) => {
       const params: unknown[] = [];
       const whereClause = buildWhereClause(where, params, modelName);
       const text = `SELECT COUNT(*) AS count FROM ${table} ${whereClause}`;
       const result = await query<{ count: string }>(text, params);
       return Number(result.rows[0]?.count ?? 0);
     },
-    create: async ({ data }: any) => {
+    create: async ({ data }: any = {}) => {
       const { text, params } = buildInsertQuery(table, data);
       const result = await query<any>(text, params);
       return result.rows[0];
@@ -538,26 +538,26 @@ function createModelHandler(modelName: string) {
       const result = await query<any>(text, params);
       return { count: result.rowCount, rows: result.rows };
     },
-    update: async ({ where, data }: any) => {
+    update: async ({ where, data }: any = {}) => {
       const params: unknown[] = [];
       const text = buildUpdateQuery(table, data, where, params);
       const result = await query<any>(text, params);
       return result.rows[0] ?? null;
     },
-    updateMany: async ({ where, data }: any) => {
+    updateMany: async ({ where, data }: any = {}) => {
       const params: unknown[] = [];
       const text = buildUpdateQuery(table, data, where, params);
       const result = await query<any>(text, params);
       return { count: result.rowCount };
     },
-    delete: async ({ where }: any) => {
+    delete: async ({ where }: any = {}) => {
       const params: unknown[] = [];
       const whereClause = buildWhereClause(where, params, modelName);
       const text = `DELETE FROM ${table} ${whereClause} RETURNING *`;
       const result = await query<any>(text, params);
       return result.rows[0] ?? null;
     },
-    deleteMany: async ({ where }: any) => {
+    deleteMany: async ({ where }: any = {}) => {
       const params: unknown[] = [];
       const whereClause = buildWhereClause(where, params, modelName);
       const text = `DELETE FROM ${table} ${whereClause}`;
