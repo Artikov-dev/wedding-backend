@@ -64,14 +64,18 @@ export async function PUT(
 ) {
   try {
     const userId = request.headers.get('x-user-id');
+    const userRole = request.headers.get('x-user-role');
     const { hallId } = await params;
 
-    // Verify ownership
     const hall = await prisma.hallProfile.findUnique({
       where: { id: hallId },
     });
 
-    if (!hall || hall.userId !== userId) {
+    if (!hall) {
+      return errorResponse('Hall not found', 404, 'Not found');
+    }
+
+    if (userRole !== 'ADMIN' && hall.userId !== userId) {
       return errorResponse('You do not have permission to update this hall', 403, 'Forbidden');
     }
 
@@ -108,14 +112,18 @@ export async function DELETE(
 ) {
   try {
     const userId = request.headers.get('x-user-id');
+    const userRole = request.headers.get('x-user-role');
     const { hallId } = await params;
 
-    // Verify ownership
     const hall = await prisma.hallProfile.findUnique({
       where: { id: hallId },
     });
 
-    if (!hall || hall.userId !== userId) {
+    if (!hall) {
+      return errorResponse('Hall not found', 404, 'Not found');
+    }
+
+    if (userRole !== 'ADMIN' && hall.userId !== userId) {
       return errorResponse('You do not have permission to delete this hall', 403, 'Forbidden');
     }
 

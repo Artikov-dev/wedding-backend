@@ -28,13 +28,23 @@ const bodies: Record<OtpPurpose, (otp: string) => string> = {
 };
 
 export async function sendOTPEmail(email: string, otp: string, purpose: OtpPurpose): Promise<void> {
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.log(`[EMAIL SKIP] SMTP not configured. OTP for ${email} (${purpose}): ${otp}`);
+    return;
+  }
+
   const subject = subjects[purpose] ?? 'Tasdiqlash kodi';
   const html = bodies[purpose]?.(otp) ?? `<p>Sizning kodingiz: <strong>${otp}</strong></p>`;
 
-  await transporter.sendMail({
-    from: process.env.SMTP_FROM || process.env.SMTP_USER,
-    to: email,
-    subject,
-    html,
-  });
+  try {
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM || process.env.SMTP_USER,
+      to: email,
+      subject,
+      html,
+    });
+  } catch (err) {
+    console.error('[EMAIL ERROR]', err);
+    throw new Error('Failed to send email. Please check SMTP configuration.');
+  }
 }

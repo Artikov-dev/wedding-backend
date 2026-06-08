@@ -1,7 +1,20 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
+import { query } from '@/lib/db';
 import { updateBookingSchema, updateBookingStatusSchema } from '@/lib/validations';
 import { successResponse, errorResponse, handleApiError } from '@/lib/api-response';
+
+async function getBookingWithHall(bookingId: string) {
+  const result = await query<any>(
+    `SELECT b.*, h."userId" AS "hallOwnerId"
+     FROM "Booking" b
+     LEFT JOIN "HallProfile" h ON h.id = b."hallId"
+     WHERE b.id = $1
+     LIMIT 1`,
+    [bookingId]
+  );
+  return result.rows[0] ?? null;
+}
 
 export async function GET(
   request: NextRequest,
@@ -9,25 +22,26 @@ export async function GET(
 ) {
   try {
     const userId = request.headers.get('x-user-id');
+    const userRole = request.headers.get('x-user-role');
     const { bookingId } = await params;
 
-    const booking = await prisma.booking.findUnique({
+    const booking = await getBookingWithHall(bookingId);
+
+    if (!booking) {
+      return errorResponse('Booking not found', 404, 'Not found');
+    }
+
+    const isAdmin = userRole === 'ADMIN';
+    const isOwner = booking.hallOwnerId === userId;
+    const isCustomer = booking.userId === userId;
+
+    if (!isAdmin && !isOwner && !isCustomer) {
+      return errorResponse('You do not have permission to view this booking', 403, 'Forbidden');
+    }
+
+    const fullBooking = await prisma.booking.findUnique({
       where: { id: bookingId },
       include: {
-        hall: {
-          include: {
-            amenities: true,
-            services: true,
-            user: {
-              select: {
-                firstName: true,
-                lastName: true,
-                phone: true,
-                email: true,
-              },
-            },
-          },
-        },
         user: {
           select: {
             id: true,
@@ -37,38 +51,18 @@ export async function GET(
             phone: true,
           },
         },
-        serviceBookings: {
-          include: {
-            serviceProvider: true,
-          },
-        },
-        payments: {
-          orderBy: { createdAt: 'desc' },
-        },
-        invitations: {
-          include: {
-            user: {
-              select: {
-                firstName: true,
-                lastName: true,
-                email: true,
-              },
-            },
-          },
-        },
       },
     });
 
-    if (!booking) {
-      return errorResponse('Booking not found', 404, 'Not found');
-    }
+    const hall = await query<any>(
+      `SELECT id, name, city, "pricePerPlate", "imageUrl" FROM "HallProfile" WHERE id = $1 LIMIT 1`,
+      [booking.hallId]
+    );
 
-    // Verify access
-    if (booking.userId !== userId && booking.hall.userId !== userId) {
-      return errorResponse('You do not have permission to view this booking', 403, 'Forbidden');
-    }
-
-    return successResponse(booking, 'Booking retrieved successfully');
+    return successResponse(
+      { ...fullBooking, hall: hall.rows[0] ?? null },
+      'Booking retrieved successfully'
+    );
   } catch (error) {
     return handleApiError(error, 'Failed to retrieve booking');
   }
@@ -80,36 +74,50 @@ export async function PUT(
 ) {
   try {
     const userId = request.headers.get('x-user-id');
+    const userRole = request.headers.get('x-user-role');
     const { bookingId } = await params;
 
-    const booking = await prisma.booking.findUnique({
-      where: { id: bookingId },
-      include: { hall: true },
-    });
+    const booking = await getBookingWithHall(bookingId);
 
     if (!booking) {
       return errorResponse('Booking not found', 404, 'Not found');
     }
 
-    // Verify permission - only booking creator or hall owner can update
-    if (booking.userId !== userId && booking.hall.userId !== userId) {
+    const isAdmin = userRole === 'ADMIN';
+    const isHallOwner = userRole === 'HALL_OWNER' && booking.hallOwnerId === userId;
+    const isBookingOwner = booking.userId === userId;
+
+    if (!isAdmin && !isHallOwner && !isBookingOwner) {
       return errorResponse('You do not have permission to update this booking', 403, 'Forbidden');
     }
 
     const body = await request.json();
 
-    // Status update — hall owner or admin can change status
-    if (body.status !== undefined && Object.keys(body).length === 1) {
-      const statusResult = updateBookingStatusSchema.safeParse(body);
+    if (body.status !== undefined) {
+      const statusResult = updateBookingStatusSchema.safeParse({ status: body.status });
       if (!statusResult.success) {
         return errorResponse(statusResult.error.errors[0].message, 400, 'Validation error');
       }
+
+      // CUSTOMER can only cancel their own booking
+      if (isBookingOwner && !isAdmin && !isHallOwner && statusResult.data.status !== 'CANCELLED') {
+        return errorResponse('Customer can only cancel bookings', 403, 'Forbidden');
+      }
+
       const updatedBooking = await prisma.booking.update({
         where: { id: bookingId },
         data: { status: statusResult.data.status },
-        include: { hall: true, user: true },
       });
-      return successResponse(updatedBooking, 'Booking status updated successfully');
+
+      const hall = await query<any>(
+        `SELECT id, name, city FROM "HallProfile" WHERE id = $1 LIMIT 1`,
+        [booking.hallId]
+      );
+
+      return successResponse(
+        { ...updatedBooking, hall: hall.rows[0] ?? null },
+        'Booking status updated successfully'
+      );
     }
 
     const validationResult = updateBookingSchema.safeParse(body);
@@ -121,19 +129,9 @@ export async function PUT(
       );
     }
 
-    // Update booking
     const updatedBooking = await prisma.booking.update({
       where: { id: bookingId },
       data: validationResult.data,
-      include: {
-        hall: true,
-        user: true,
-        serviceBookings: {
-          include: {
-            serviceProvider: true,
-          },
-        },
-      },
     });
 
     return successResponse(updatedBooking, 'Booking updated successfully');
@@ -148,23 +146,22 @@ export async function DELETE(
 ) {
   try {
     const userId = request.headers.get('x-user-id');
+    const userRole = request.headers.get('x-user-role');
     const { bookingId } = await params;
 
-    const booking = await prisma.booking.findUnique({
-      where: { id: bookingId },
-      include: { hall: true },
-    });
+    const booking = await getBookingWithHall(bookingId);
 
     if (!booking) {
       return errorResponse('Booking not found', 404, 'Not found');
     }
 
-    // Verify permission
-    if (booking.userId !== userId && booking.hall.userId !== userId) {
+    const isAdmin = userRole === 'ADMIN';
+    const isBookingOwner = booking.userId === userId;
+
+    if (!isAdmin && !isBookingOwner) {
       return errorResponse('You do not have permission to delete this booking', 403, 'Forbidden');
     }
 
-    // Cancel booking instead of deleting
     const cancelledBooking = await prisma.booking.update({
       where: { id: bookingId },
       data: { status: 'CANCELLED' },

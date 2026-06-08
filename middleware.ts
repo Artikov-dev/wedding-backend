@@ -75,47 +75,81 @@ async function verifyAccessToken(token: string) {
   }
 }
 
+const ALLOWED_ORIGINS = [
+  'http://localhost:3000',
+  'https://wedding-platforom.vercel.app',
+];
+
+function setCorsHeaders(response: NextResponse, origin: string | null) {
+  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+    response.headers.set('Access-Control-Allow-Origin', origin);
+  }
+  response.headers.set('Access-Control-Allow-Credentials', 'true');
+  response.headers.set('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+  response.headers.set(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization, x-user-id, x-user-role, x-user-email'
+  );
+  return response;
+}
+
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  const origin = request.headers.get('origin');
 
   if (!pathname.startsWith('/api/')) {
     return NextResponse.next();
   }
 
+  // Handle CORS preflight
+  if (request.method === 'OPTIONS') {
+    const preflight = new NextResponse(null, { status: 204 });
+    return setCorsHeaders(preflight, origin);
+  }
+
   // Rate limiting
   const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
   if (!checkRateLimit(clientIp, pathname)) {
-    return NextResponse.json(
-      { success: false, error: 'Too many requests. Please try again later.', statusCode: 429 },
-      { status: 429 }
+    return setCorsHeaders(
+      NextResponse.json(
+        { success: false, error: 'Too many requests. Please try again later.', statusCode: 429 },
+        { status: 429 }
+      ),
+      origin
     );
   }
 
   if (publicRoutes.some((route) => pathname === route || pathname.startsWith(`${route}/`))) {
-    return NextResponse.next();
+    return setCorsHeaders(NextResponse.next(), origin);
   }
 
   // Public GET-only routes: halls detail/list and services
   const publicGetRoutes = ['/api/halls', '/api/services'];
   if (request.method === 'GET' && publicGetRoutes.some((r) => pathname === r || pathname.startsWith(`${r}/`))) {
-    return NextResponse.next();
+    return setCorsHeaders(NextResponse.next(), origin);
   }
 
   const authHeader = request.headers.get('authorization');
   const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
 
   if (!token) {
-    return NextResponse.json(
-      { success: false, error: 'Unauthorized - Missing token', statusCode: 401 },
-      { status: 401 }
+    return setCorsHeaders(
+      NextResponse.json(
+        { success: false, error: 'Unauthorized - Missing token', statusCode: 401 },
+        { status: 401 }
+      ),
+      origin
     );
   }
 
   const decoded = await verifyAccessToken(token);
   if (!decoded) {
-    return NextResponse.json(
-      { success: false, error: 'Unauthorized - Invalid token', statusCode: 401 },
-      { status: 401 }
+    return setCorsHeaders(
+      NextResponse.json(
+        { success: false, error: 'Unauthorized - Invalid token', statusCode: 401 },
+        { status: 401 }
+      ),
+      origin
     );
   }
 
@@ -124,11 +158,10 @@ export async function middleware(request: NextRequest) {
   requestHeaders.set('x-user-email', decoded.email);
   requestHeaders.set('x-user-role', decoded.role);
 
-  return NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  });
+  return setCorsHeaders(
+    NextResponse.next({ request: { headers: requestHeaders } }),
+    origin
+  );
 }
 
 export const config = {

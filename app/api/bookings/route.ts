@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
+import { query } from '@/lib/db';
 import { bookingFilterSchema } from '@/lib/validations';
 import { successResponse, errorResponse, handleApiError } from '@/lib/api-response';
 
@@ -20,7 +21,7 @@ export async function GET(request: NextRequest) {
       startDate: searchParams.get('startDate') || undefined,
       endDate: searchParams.get('endDate') || undefined,
       page: parseInt(searchParams.get('page') || '1'),
-      limit: parseInt(searchParams.get('limit') || '10'),
+      limit: parseInt(searchParams.get('limit') || '20'),
     };
 
     // Validate input
@@ -43,9 +44,20 @@ export async function GET(request: NextRequest) {
     } else if (userRole === 'CUSTOMER') {
       where.userId = userId;
     } else if (userRole === 'HALL_OWNER') {
-      where.hall = { userId };
+      // Get hall IDs owned by this user, then filter bookings
+      const ownerHalls = await query<{ id: string }>(
+        `SELECT id FROM "HallProfile" WHERE "userId" = $1`,
+        [userId]
+      );
+      const hallIds = ownerHalls.rows.map((h) => h.id);
+      if (hallIds.length === 0) {
+        return successResponse(
+          { bookings: [], pagination: { page, limit, total: 0, pages: 0 } },
+          'Bookings retrieved successfully'
+        );
+      }
+      where.hallId = { in: hallIds };
     } else {
-      // Default: user sees own bookings
       where.userId = userId;
     }
 
@@ -70,15 +82,9 @@ export async function GET(request: NextRequest) {
             select: {
               id: true,
               name: true,
+              city: true,
               pricePerPlate: true,
               imageUrl: true,
-              user: {
-                select: {
-                  firstName: true,
-                  lastName: true,
-                  phone: true,
-                },
-              },
             },
           },
           user: {
@@ -89,27 +95,6 @@ export async function GET(request: NextRequest) {
               email: true,
               phone: true,
             },
-          },
-          serviceBookings: {
-            include: {
-              serviceProvider: {
-                select: {
-                  id: true,
-                  name: true,
-                  serviceType: true,
-                  pricing: true,
-                },
-              },
-            },
-          },
-          payments: {
-            select: {
-              id: true,
-              amount: true,
-              status: true,
-              createdAt: true,
-            },
-            orderBy: { createdAt: 'desc' },
           },
         },
         skip,

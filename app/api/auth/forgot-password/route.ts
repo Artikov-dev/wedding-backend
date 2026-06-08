@@ -20,26 +20,23 @@ export async function POST(request: NextRequest) {
 
     const { email } = validationResult.data;
 
-    // SECURITY: Always return the same response to prevent email enumeration
-    const genericResponse = successResponse(
-      { message: 'If this email exists, an OTP has been sent' },
-      'Password reset OTP sent'
-    );
-
     const user = await prisma.user.findUnique({
       where: { email },
     });
 
     if (!user) {
-      return genericResponse;
+      return errorResponse('No account found with this email address', 404, 'Not found');
     }
 
-    // Create OTP and send email
-    const otp = await createOTP(user.id, 'password_reset');
-    await sendOTPEmail(email, otp, 'password_reset');
+    try {
+      const otp = await createOTP(user.id, 'password_reset');
+      await sendOTPEmail(email, otp, 'password_reset');
+    } catch (emailError) {
+      console.error('[FORGOT_PASSWORD] Email send failed:', emailError);
+      return errorResponse('Failed to send OTP email. Please check your email address or try again later.', 400, 'Email error');
+    }
 
-    // Return identical response — do NOT leak userId
-    return genericResponse;
+    return successResponse(null, 'OTP has been sent to your email');
   } catch (error) {
     return handleApiError(error, 'Failed to process forgot password request');
   }
