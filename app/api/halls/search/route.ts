@@ -16,6 +16,9 @@ export async function GET(request: NextRequest) {
       rating: searchParams.get('rating') || undefined,
       page: searchParams.get('page') || undefined,
       limit: searchParams.get('limit') || undefined,
+      search: searchParams.get('search') || undefined,
+      ownerId: searchParams.get('ownerId') || undefined,
+      approvalStatus: searchParams.get('approvalStatus') || undefined,
     };
 
     // Validate input
@@ -28,14 +31,21 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const { city, capacity, minPrice, maxPrice, category, rating, page, limit } = validationResult.data;
+    const { search, city, capacity, minPrice, maxPrice, category, rating, ownerId, approvalStatus, page, limit } = validationResult.data;
 
-    // Build where clause
-    const where: any = {
-      approvalStatus: 'APPROVED',
-      isActive: true,
-    };
+    // Build where clause — owner/admin can filter by approvalStatus; public only sees APPROVED
+    const where: any = {};
 
+    if (ownerId) {
+      where.userId = ownerId;
+      // owner sees their own halls regardless of approval status
+    } else {
+      where.approvalStatus = approvalStatus || 'APPROVED';
+      where.isActive = true;
+    }
+
+    if (search) where.name = { contains: search };
+    if (city) where.city = { contains: city };
     if (category) where.category = category;
     if (capacity) where.capacity = { gte: capacity };
     if (minPrice) where.pricePerPlate = { gte: minPrice };
@@ -43,8 +53,6 @@ export async function GET(request: NextRequest) {
       where.pricePerPlate = where.pricePerPlate ? { ...where.pricePerPlate, lte: maxPrice } : { lte: maxPrice };
     }
     if (rating) where.ratings = { gte: rating };
-
-    // TODO: Add location/city filtering using address relationship
 
     // Calculate pagination
     const skip = (page - 1) * limit;

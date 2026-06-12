@@ -58,11 +58,14 @@ export const updateAddressSchema = z.object({
 
 export const createHallSchema = z.object({
   name: z.string().min(1, 'Hall name is required'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
-  category: z.enum(['LUXURY', 'PREMIUM', 'STANDARD', 'BUDGET']).optional(),
-  capacity: z.coerce.number().min(10, 'Capacity must be at least 10').max(10000),
+  description: z.string().optional().default(''),
+  category: z.enum(['ECONOMY', 'STANDARD', 'PREMIUM', 'VIP']).optional(),
+  capacity: z.coerce.number().min(1, 'Capacity must be at least 1').max(10000),
   pricePerPlate: z.coerce.number().min(0, 'Price must be positive'),
   advancePercentage: z.coerce.number().min(0).max(100).optional(),
+  city: z.string().optional(),
+  address: z.string().optional(),
+  phone: z.string().optional(),
   imageUrl: z.string().optional(),
   amenities: z.array(z.object({
     name: z.string(),
@@ -70,7 +73,9 @@ export const createHallSchema = z.object({
   })).optional(),
 });
 
-export const updateHallSchema = createHallSchema.partial();
+export const updateHallSchema = createHallSchema.partial().extend({
+  approvalStatus: z.enum(['PENDING', 'APPROVED', 'REJECTED']).optional(),
+});
 
 export const addHallAmenitySchema = z.object({
   name: z.string().min(1, 'Amenity name is required'),
@@ -171,13 +176,16 @@ export const startConversationSchema = z.object({
 // ==================== SEARCH & FILTER SCHEMAS ====================
 
 export const hallSearchSchema = z.object({
+  search: z.string().optional(),
   city: z.string().optional(),
   capacity: z.coerce.number().optional(),
   minPrice: z.coerce.number().optional(),
   maxPrice: z.coerce.number().optional(),
   amenities: z.array(z.string()).optional(),
-  category: z.enum(['LUXURY', 'PREMIUM', 'STANDARD', 'BUDGET']).optional(),
+  category: z.enum(['ECONOMY', 'STANDARD', 'PREMIUM', 'VIP']).optional(),
   rating: z.coerce.number().min(1).max(5).optional(),
+  ownerId: z.string().optional(),
+  approvalStatus: z.string().optional(),
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(10),
 });

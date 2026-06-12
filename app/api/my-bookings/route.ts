@@ -20,8 +20,8 @@ export async function GET(request: NextRequest) {
       return errorResponse('Unauthorized', 401, 'User not authenticated');
     }
 
-    // Only customers can view their bookings
-    if (userRole !== 'CUSTOMER') {
+    // Only customers (and admins) can use this endpoint
+    if (userRole !== 'CUSTOMER' && userRole !== 'ADMIN') {
       return errorResponse('Forbidden', 403, 'Only customers can view their bookings');
     }
 

@@ -24,32 +24,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { name, description, category, capacity, pricePerPlate, advancePercentage, imageUrl, amenities } = validationResult.data;
+    const { name, description, category, capacity, pricePerPlate, advancePercentage, city, address, phone, imageUrl, amenities } = validationResult.data;
 
     // Admin can create hall for any user via ownerId body param; owner uses own id
     const hallOwnerId = (userRole === 'ADMIN' && body.ownerId) ? body.ownerId : userId;
 
-    // Check if target user already has a hall profile
-    const existingHall = await prisma.hallProfile.findUnique({
-      where: { userId: hallOwnerId },
-    });
-
-    if (existingHall) {
-      return errorResponse('This user already has a hall profile', 409, 'Hall already exists');
-    }
-
-    // Create hall — admin-created halls are auto-approved
+    // Create hall — admin-created halls are auto-approved (owners CAN have multiple halls)
     const hall = await prisma.hallProfile.create({
       data: {
         userId: hallOwnerId,
         name,
-        description,
+        description: description || '',
         category: category || 'STANDARD',
         capacity,
         pricePerPlate,
         advancePercentage: advancePercentage || 25,
-        imageUrl,
+        city: city || null,
+        address: address || null,
+        phone: phone || null,
+        imageUrl: imageUrl || null,
         approvalStatus: userRole === 'ADMIN' ? 'APPROVED' : 'PENDING',
+        isActive: true,
       },
     });
 

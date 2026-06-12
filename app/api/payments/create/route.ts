@@ -72,6 +72,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Non-stripe payments (CASH, BANK_TRANSFER, etc.) are considered immediately completed;
+    // STRIPE stays PENDING until webhook confirmation.
+    const paymentStatus = paymentMethod === 'STRIPE' ? 'PENDING' : 'COMPLETED';
+
     // Create payment
     const payment = await prisma.payment.create({
       data: {
@@ -80,7 +84,7 @@ export async function POST(request: NextRequest) {
         amount,
         paymentType,
         paymentMethod,
-        status: paymentMethod === 'STRIPE' ? 'PENDING' : 'PENDING',
+        status: paymentStatus,
       },
     });
 
@@ -96,7 +100,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Update booking status based on payment type
+    // Update booking status based on payment type — only when payment is completed
     let newPaymentStatus = booking.paymentStatus;
     let newBookingStatus = booking.status;
 

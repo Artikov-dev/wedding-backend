@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
         userId: hall.userId,
         type: 'BOOKING_CONFIRMED',
         title: 'New Booking Request',
-        message: `New booking request for ${new Date(eventDate).toLocaleDateString()} from ${hall.pricePerPlate * numberOfGuests}`,
+        message: `New booking request for ${new Date(eventDate).toLocaleDateString()} — total: ${hall.pricePerPlate * numberOfGuests} UZS`,
         relatedId: booking.id,
       },
     });
