@@ -518,6 +518,18 @@ function createModelHandler(modelName: string) {
       return Number(result.rows[0]?.count ?? 0);
     },
   
+    create: async ({ data, include, select }: any) => {
+      const { text, params } = buildInsertQuery(table, data);
+      const result = await query<any>(text, params);
+      const row = result.rows[0] ?? null;
+      if (!row) return null;
+      if (include) {
+        const [attached] = await attachInclude([row], modelName, include);
+        return attached;
+      }
+      if (select) return pickFields(row, select);
+      return row;
+    },
     createMany: async ({ data }: any) => {
       if (!Array.isArray(data) || data.length === 0) {
         return { count: 0 };

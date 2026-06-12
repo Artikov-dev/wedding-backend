@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
         phone,
         password: hashedPassword,
         firstName,
-        lastName,
+        lastName: lastName || '',
         role: (role as any) || 'CUSTOMER',
       },
     });
@@ -82,7 +82,13 @@ export async function POST(request: NextRequest) {
       'User registered successfully',
       201
     );
-  } catch (error) {
+  } catch (error: any) {
+    console.error('[Register Error]', {
+      message: error?.message,
+      code: error?.code,
+      meta: error?.meta,
+      stack: error?.stack?.split('\n').slice(0, 5).join('\n'),
+    });
     return handleApiError(error, 'Failed to register user');
   }
 }

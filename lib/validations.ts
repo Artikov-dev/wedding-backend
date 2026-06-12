@@ -6,7 +6,7 @@ export const registerSchema = z.object({
   phone: z.string().min(10, 'Phone must be at least 10 digits'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
-  lastName: z.string().min(2, 'Last name must be at least 2 characters'),
+  lastName: z.string().optional().default(''),
   role: z.enum(['ADMIN', 'HALL_OWNER', 'SERVICE_PROVIDER', 'CUSTOMER']).optional(),
 });
 
