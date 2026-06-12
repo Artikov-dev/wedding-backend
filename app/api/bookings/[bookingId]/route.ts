@@ -4,6 +4,12 @@ import { query } from '@/lib/db';
 import { updateBookingSchema, updateBookingStatusSchema } from '@/lib/validations';
 import { successResponse, errorResponse, handleApiError } from '@/lib/api-response';
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function isValidUUID(id: string): boolean {
+  return UUID_REGEX.test(id);
+}
+
 async function getBookingWithHall(bookingId: string) {
   const result = await query<any>(
     `SELECT b.*, h."userId" AS "hallOwnerId"
@@ -24,6 +30,10 @@ export async function GET(
     const userId = request.headers.get('x-user-id');
     const userRole = request.headers.get('x-user-role');
     const { bookingId } = await params;
+
+    if (!isValidUUID(bookingId)) {
+      return errorResponse('Yaroqsiz Buyurtma ID formati (UUID kutilmoqda)', 400, 'Invalid ID format');
+    }
 
     const booking = await getBookingWithHall(bookingId);
 
@@ -76,6 +86,10 @@ export async function PUT(
     const userId = request.headers.get('x-user-id');
     const userRole = request.headers.get('x-user-role');
     const { bookingId } = await params;
+
+    if (!isValidUUID(bookingId)) {
+      return errorResponse('Yaroqsiz Buyurtma ID formati (UUID kutilmoqda)', 400, 'Invalid ID format');
+    }
 
     const booking = await getBookingWithHall(bookingId);
 
@@ -148,6 +162,10 @@ export async function DELETE(
     const userId = request.headers.get('x-user-id');
     const userRole = request.headers.get('x-user-role');
     const { bookingId } = await params;
+
+    if (!isValidUUID(bookingId)) {
+      return errorResponse('Yaroqsiz Buyurtma ID formati (UUID kutilmoqda)', 400, 'Invalid ID format');
+    }
 
     const booking = await getBookingWithHall(bookingId);
 

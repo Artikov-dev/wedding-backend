@@ -10,12 +10,9 @@ const isLocalDatabase = /localhost|127\.0\.0\.1/.test(connectionString);
 const pool = new Pool({
   connectionString,
   ssl: isLocalDatabase ? undefined : { rejectUnauthorized: false },
-  max: 5,
-  min: 1,
-  idleTimeoutMillis: 60000,
-  connectionTimeoutMillis: 15000,
-  keepAlive: true,
-  keepAliveInitialDelayMillis: 10000,
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
 });
 
 const MAX_QUERY_RETRIES = 2;
@@ -34,7 +31,7 @@ export async function query<T extends any[] | QueryResultRow | Submittable = any
     } catch (error: any) {
       attempt += 1;
       const message = String(error?.message || '');
-      const retryable = /timeout exceeded|Connection terminated|connect ECONNRESET|connection timeout|SSL connection|EPIPE|ENOTFOUND/i.test(message);
+      const retryable = /timeout exceeded|Connection terminated|connect ECONNRESET|connection timeout/i.test(message);
       if (attempt <= MAX_QUERY_RETRIES && retryable) {
         await sleep(QUERY_RETRY_DELAY_MS);
         continue;

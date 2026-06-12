@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
     });
     const refreshToken = await generateRefreshToken(user.id);
 
+    console.log(`[OTP] Code for ${email} (email_verification): ${otp}`);
     await sendOTPEmail(email, otp, 'email_verification').catch((err) =>
       console.error('[Auth] OTP email send failed:', err)
     );

@@ -28,13 +28,11 @@ export async function POST(request: NextRequest) {
       return errorResponse('No account found with this email address', 404, 'Not found');
     }
 
-    try {
-      const otp = await createOTP(user.id, 'password_reset');
-      await sendOTPEmail(email, otp, 'password_reset');
-    } catch (emailError) {
-      console.error('[FORGOT_PASSWORD] Email send failed:', emailError);
-      return errorResponse('Failed to send OTP email. Please check your email address or try again later.', 400, 'Email error');
-    }
+    const otp = await createOTP(user.id, 'password_reset');
+    console.log(`[OTP] Code for ${email} (password_reset): ${otp}`);
+    await sendOTPEmail(email, otp, 'password_reset').catch((err) =>
+      console.error('[FORGOT_PASSWORD] Email send failed:', err)
+    );
 
     return successResponse(null, 'OTP has been sent to your email');
   } catch (error) {

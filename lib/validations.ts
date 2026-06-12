@@ -60,9 +60,9 @@ export const createHallSchema = z.object({
   name: z.string().min(1, 'Hall name is required'),
   description: z.string().min(10, 'Description must be at least 10 characters'),
   category: z.enum(['LUXURY', 'PREMIUM', 'STANDARD', 'BUDGET']).optional(),
-  capacity: z.number().min(10, 'Capacity must be at least 10').max(10000),
-  pricePerPlate: z.number().min(0, 'Price must be positive'),
-  advancePercentage: z.number().min(0).max(100).optional(),
+  capacity: z.coerce.number().min(10, 'Capacity must be at least 10').max(10000),
+  pricePerPlate: z.coerce.number().min(0, 'Price must be positive'),
+  advancePercentage: z.coerce.number().min(0).max(100).optional(),
   imageUrl: z.string().optional(),
   amenities: z.array(z.object({
     name: z.string(),
@@ -172,14 +172,14 @@ export const startConversationSchema = z.object({
 
 export const hallSearchSchema = z.object({
   city: z.string().optional(),
-  capacity: z.number().optional(),
-  minPrice: z.number().optional(),
-  maxPrice: z.number().optional(),
+  capacity: z.coerce.number().optional(),
+  minPrice: z.coerce.number().optional(),
+  maxPrice: z.coerce.number().optional(),
   amenities: z.array(z.string()).optional(),
   category: z.enum(['LUXURY', 'PREMIUM', 'STANDARD', 'BUDGET']).optional(),
-  rating: z.number().min(1).max(5).optional(),
-  page: z.number().min(1).default(1),
-  limit: z.number().min(1).max(100).default(10),
+  rating: z.coerce.number().min(1).max(5).optional(),
+  page: z.coerce.number().min(1).default(1),
+  limit: z.coerce.number().min(1).max(100).default(10),
 });
 
 export const bookingFilterSchema = z.object({

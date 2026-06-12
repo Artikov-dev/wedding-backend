@@ -9,13 +9,13 @@ export async function GET(request: NextRequest) {
 
     const queryParams = {
       city: searchParams.get('city') || undefined,
-      capacity: searchParams.get('capacity') ? parseInt(searchParams.get('capacity')!) : undefined,
-      minPrice: searchParams.get('minPrice') ? parseFloat(searchParams.get('minPrice')!) : undefined,
-      maxPrice: searchParams.get('maxPrice') ? parseFloat(searchParams.get('maxPrice')!) : undefined,
+      capacity: searchParams.get('capacity') || undefined,
+      minPrice: searchParams.get('minPrice') || undefined,
+      maxPrice: searchParams.get('maxPrice') || undefined,
       category: searchParams.get('category') || undefined,
-      rating: searchParams.get('rating') ? parseFloat(searchParams.get('rating')!) : undefined,
-      page: parseInt(searchParams.get('page') || '1'),
-      limit: parseInt(searchParams.get('limit') || '10'),
+      rating: searchParams.get('rating') || undefined,
+      page: searchParams.get('page') || undefined,
+      limit: searchParams.get('limit') || undefined,
     };
 
     // Validate input
