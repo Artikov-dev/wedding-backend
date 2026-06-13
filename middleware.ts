@@ -127,7 +127,10 @@ export async function middleware(request: NextRequest) {
   // Public GET-only routes: halls detail/list and services
   const publicGetRoutes = ['/api/halls', '/api/services'];
   if (request.method === 'GET' && publicGetRoutes.some((r) => pathname === r || pathname.startsWith(`${r}/`))) {
-    return setCorsHeaders(NextResponse.next(), origin);
+    // IMPORTANT: Exclude authenticated routes that fall under /api/halls/
+    if (!pathname.startsWith('/api/halls/owner')) {
+      return setCorsHeaders(NextResponse.next(), origin);
+    }
   }
 
   const authHeader = request.headers.get('authorization');

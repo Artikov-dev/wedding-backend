@@ -63,6 +63,9 @@ export async function GET(request: NextRequest) {
         where,
         include: {
           amenities: true,
+          images: {
+            orderBy: { displayOrder: 'asc' },
+          },
           _count: {
             select: { bookings: true, reviews: true },
           },

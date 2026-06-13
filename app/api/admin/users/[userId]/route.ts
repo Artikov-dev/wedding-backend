@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { successResponse, errorResponse, handleApiError } from '@/lib/api-response';
+import { logActivity } from '@/lib/logger';
 
 export async function GET(
   request: NextRequest,
@@ -106,6 +107,23 @@ export async function PUT(
         createdAt: true,
       },
     });
+
+    // Activity Log yozish
+    const adminId = request.headers.get('x-user-id');
+    if (adminId && updateData.status !== undefined && updateData.status !== existing.status) {
+      await logActivity({
+        userId: adminId,
+        action: 'USER_STATUS_CHANGED',
+        entity: 'User',
+        entityId: targetId,
+        metadata: {
+          targetEmail: existing.email,
+          targetName: `${existing.firstName} ${existing.lastName}`,
+          oldValue: existing.status,
+          newValue: updateData.status,
+        },
+      });
+    }
 
     return successResponse(updated, 'User updated successfully');
   } catch (error) {

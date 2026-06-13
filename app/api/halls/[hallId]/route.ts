@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { updateHallSchema } from '@/lib/validations';
 import { successResponse, errorResponse, handleApiError } from '@/lib/api-response';
+import { logActivity } from '@/lib/logger';
 
 export async function GET(
   request: NextRequest,
@@ -25,6 +26,9 @@ export async function GET(
         },
         amenities: true,
         services: true,
+        images: {
+          orderBy: { displayOrder: 'asc' },
+        },
         reviews: {
           include: {
             user: {
@@ -100,6 +104,16 @@ export async function PUT(
       },
     });
 
+    if (userId) {
+      await logActivity({
+        userId,
+        action: 'HALL_UPDATED',
+        targetId: hallId,
+        oldValue: hall,
+        newValue: updatedHall
+      });
+    }
+
     return successResponse(updatedHall, 'Hall updated successfully');
   } catch (error) {
     return handleApiError(error, 'Failed to update hall');
@@ -131,6 +145,16 @@ export async function DELETE(
     await prisma.hallProfile.delete({
       where: { id: hallId },
     });
+
+    if (userId) {
+      await logActivity({
+        userId,
+        action: 'HALL_DELETED',
+        targetId: hallId,
+        oldValue: hall,
+        newValue: null
+      });
+    }
 
     return successResponse(null, 'Hall deleted successfully');
   } catch (error) {

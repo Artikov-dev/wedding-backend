@@ -3,6 +3,7 @@ import { prisma } from '@/lib/db';
 import { query } from '@/lib/db';
 import { updateBookingSchema, updateBookingStatusSchema } from '@/lib/validations';
 import { successResponse, errorResponse, handleApiError } from '@/lib/api-response';
+import { logActivity } from '@/lib/logger';
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -35,15 +36,18 @@ export async function GET(
       return errorResponse('Yaroqsiz Buyurtma ID formati (UUID kutilmoqda)', 400, 'Invalid ID format');
     }
 
-    const booking = await getBookingWithHall(bookingId);
+    const bookingWithHall = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: { hall: true }
+    });
 
-    if (!booking) {
+    if (!bookingWithHall) {
       return errorResponse('Booking not found', 404, 'Not found');
     }
 
     const isAdmin = userRole === 'ADMIN';
-    const isOwner = booking.hallOwnerId === userId;
-    const isCustomer = booking.userId === userId;
+    const isOwner = userRole === 'HALL_OWNER' && bookingWithHall.hall?.userId === userId;
+    const isCustomer = bookingWithHall.userId === userId;
 
     if (!isAdmin && !isOwner && !isCustomer) {
       return errorResponse('You do not have permission to view this booking', 403, 'Forbidden');
@@ -66,7 +70,7 @@ export async function GET(
 
     const hall = await query<any>(
       `SELECT id, name, "pricePerPlate", "imageUrl", capacity, category FROM "HallProfile" WHERE id = $1 LIMIT 1`,
-      [booking.hallId]
+      [bookingWithHall.hallId]
     );
 
     return successResponse(
@@ -91,15 +95,18 @@ export async function PUT(
       return errorResponse('Yaroqsiz Buyurtma ID formati (UUID kutilmoqda)', 400, 'Invalid ID format');
     }
 
-    const booking = await getBookingWithHall(bookingId);
+    const bookingWithHall = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: { hall: true }
+    });
 
-    if (!booking) {
+    if (!bookingWithHall) {
       return errorResponse('Booking not found', 404, 'Not found');
     }
 
     const isAdmin = userRole === 'ADMIN';
-    const isHallOwner = userRole === 'HALL_OWNER' && booking.hallOwnerId === userId;
-    const isBookingOwner = booking.userId === userId;
+    const isHallOwner = userRole === 'HALL_OWNER' && bookingWithHall.hall?.userId === userId;
+    const isBookingOwner = bookingWithHall.userId === userId;
 
     if (!isAdmin && !isHallOwner && !isBookingOwner) {
       return errorResponse('You do not have permission to update this booking', 403, 'Forbidden');
@@ -115,7 +122,7 @@ export async function PUT(
 
       // CUSTOMER can only cancel their own booking
       if (isBookingOwner && !isAdmin && !isHallOwner && statusResult.data.status !== 'CANCELLED') {
-        return errorResponse('Customer can only cancel bookings', 403, 'Forbidden');
+        return errorResponse('Customer can only cancel bookings', 403, 'Faqat bron egasi bekor qila oladi, tasdiqlash imkoni yoq');
       }
 
       const updatedBooking = await prisma.booking.update({
@@ -123,9 +130,19 @@ export async function PUT(
         data: { status: statusResult.data.status },
       });
 
+      if (userId) {
+        await logActivity({
+          userId,
+          action: 'BOOKING_STATUS_CHANGED',
+          targetId: bookingId,
+          oldValue: { status: bookingWithHall.status },
+          newValue: { status: updatedBooking.status }
+        });
+      }
+
       const hall = await query<any>(
         `SELECT id, name, "pricePerPlate", "imageUrl", capacity, category FROM "HallProfile" WHERE id = $1 LIMIT 1`,
-        [booking.hallId]
+        [bookingWithHall.hallId]
       );
 
       return successResponse(
@@ -148,6 +165,16 @@ export async function PUT(
       data: validationResult.data,
     });
 
+    if (userId) {
+      await logActivity({
+        userId,
+        action: 'BOOKING_UPDATED',
+        targetId: bookingId,
+        oldValue: bookingWithHall,
+        newValue: updatedBooking
+      });
+    }
+
     return successResponse(updatedBooking, 'Booking updated successfully');
   } catch (error) {
     return handleApiError(error, 'Failed to update booking');
@@ -167,16 +194,20 @@ export async function DELETE(
       return errorResponse('Yaroqsiz Buyurtma ID formati (UUID kutilmoqda)', 400, 'Invalid ID format');
     }
 
-    const booking = await getBookingWithHall(bookingId);
+    const bookingWithHall = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: { hall: true }
+    });
 
-    if (!booking) {
+    if (!bookingWithHall) {
       return errorResponse('Booking not found', 404, 'Not found');
     }
 
     const isAdmin = userRole === 'ADMIN';
-    const isBookingOwner = booking.userId === userId;
+    const isBookingOwner = bookingWithHall.userId === userId;
+    const isHallOwner = userRole === 'HALL_OWNER' && bookingWithHall.hall?.userId === userId;
 
-    if (!isAdmin && !isBookingOwner) {
+    if (!isAdmin && !isBookingOwner && !isHallOwner) {
       return errorResponse('You do not have permission to delete this booking', 403, 'Forbidden');
     }
 
@@ -184,6 +215,16 @@ export async function DELETE(
       where: { id: bookingId },
       data: { status: 'CANCELLED' },
     });
+
+    if (userId) {
+      await logActivity({
+        userId,
+        action: 'BOOKING_CANCELLED',
+        targetId: bookingId,
+        oldValue: { status: bookingWithHall.status },
+        newValue: { status: 'CANCELLED' }
+      });
+    }
 
     return successResponse(cancelledBooking, 'Booking cancelled successfully');
   } catch (error) {

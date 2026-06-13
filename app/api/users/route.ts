@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { prisma } from '@/lib/db';
+import { prisma, query } from '@/lib/db';
 import { successResponse, errorResponse, handleApiError } from '@/lib/api-response';
 
 export async function GET(request: NextRequest) {
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const [users, total] = await Promise.all([
+    const [usersResult, total] = await Promise.all([
       prisma.user.findMany({
         where,
         select: {
@@ -55,6 +55,24 @@ export async function GET(request: NextRequest) {
       }),
       prisma.user.count({ where }),
     ]);
+
+    // get booking counts manually if mock prisma doesn't support _count
+    const userIds = usersResult.map((u: any) => u.id);
+    let bookingsCountMap: Record<string, number> = {};
+    if (userIds.length > 0) {
+      const countsResult = await query(
+        `SELECT "userId", COUNT(*) as count FROM "Booking" WHERE "userId" = ANY($1) GROUP BY "userId"`,
+        [userIds]
+      );
+      countsResult.rows.forEach((row) => {
+        bookingsCountMap[row.userId] = parseInt(row.count);
+      });
+    }
+
+    const users = usersResult.map((u: any) => ({
+      ...u,
+      _count: { bookings: bookingsCountMap[u.id] || 0 }
+    }));
 
     return successResponse(
       {

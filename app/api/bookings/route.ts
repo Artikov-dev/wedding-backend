@@ -38,9 +38,13 @@ export async function GET(request: NextRequest) {
 
     // Build where clause based on user role
     const where: any = {};
+    const targetUserId = searchParams.get('userId');
 
     if (userRole === 'ADMIN') {
-      // Admin sees all bookings — no filter
+      // Admin sees all bookings — no filter unless targetUserId is provided
+      if (targetUserId) {
+        where.userId = targetUserId;
+      }
     } else if (userRole === 'CUSTOMER') {
       where.userId = userId;
     } else if (userRole === 'HALL_OWNER') {

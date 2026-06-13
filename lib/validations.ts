@@ -196,7 +196,7 @@ export const bookingFilterSchema = z.object({
   startDate: z.string().datetime().optional(),
   endDate: z.string().datetime().optional(),
   page: z.number().min(1).default(1),
-  limit: z.number().min(1).max(100).default(10),
+  limit: z.number().min(1).max(1000).default(10),
 });
 
 // ==================== HALL STATUS ENUM ====================

@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { createBookingSchema } from '@/lib/validations';
 import { successResponse, errorResponse, handleApiError } from '@/lib/api-response';
+import { logActivity } from '@/lib/logger';
 
 function generateBookingNumber(): string {
   const timestamp = Date.now();
@@ -126,6 +127,20 @@ export async function POST(request: NextRequest) {
         title: 'New Booking Request',
         message: `New booking request for ${new Date(eventDate).toLocaleDateString()} — total: ${hall.pricePerPlate * numberOfGuests} UZS`,
         relatedId: booking.id,
+      },
+    });
+
+    // Activity Log yozish (mijoz qaysi to'yxonani bron qilgani)
+    await logActivity({
+      userId,
+      action: 'BOOKING_CREATED',
+      entity: 'Booking',
+      entityId: booking.id,
+      metadata: {
+        hallId: hall.id,
+        hallName: hall.name,
+        eventDate: booking.eventDate,
+        totalAmount: booking.totalAmount,
       },
     });
 

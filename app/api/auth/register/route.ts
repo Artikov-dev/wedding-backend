@@ -4,6 +4,7 @@ import { hashPassword, generateToken, generateRefreshToken, createOTP } from '@/
 import { registerSchema } from '@/lib/validations';
 import { parseRequestBody, successResponse, errorResponse, handleApiError } from '@/lib/api-response';
 import { sendOTPEmail } from '@/lib/email';
+import { logActivity } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -48,6 +49,7 @@ export async function POST(request: NextRequest) {
         firstName,
         lastName: lastName || '',
         role: (role as any) || 'CUSTOMER',
+        status: 'ACTIVE',
       },
     });
 
@@ -66,6 +68,19 @@ export async function POST(request: NextRequest) {
     await sendOTPEmail(email, otp, 'email_verification').catch((err) =>
       console.error('[Auth] OTP email send failed:', err)
     );
+
+    // Activity log for registration
+    await logActivity({
+      userId: user.id,
+      action: 'USER_REGISTERED',
+      entity: 'User',
+      entityId: user.id,
+      metadata: {
+        email: user.email,
+        role: user.role,
+        firstName: user.firstName,
+      },
+    });
 
     return successResponse(
       {

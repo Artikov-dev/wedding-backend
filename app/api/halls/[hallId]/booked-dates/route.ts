@@ -15,18 +15,28 @@ export async function GET(
       return errorResponse('Hall not found', 404, 'Not found');
     }
 
-    const result = await query<{ eventDate: string }>(
-      `SELECT DISTINCT TO_CHAR("eventDate", 'YYYY-MM-DD') AS "eventDate"
-       FROM "Booking"
-       WHERE "hallId" = $1
-         AND "status" IN ('CONFIRMED', 'PENDING')
-       ORDER BY "eventDate"`,
+    const result = await query<{ eventDate: string, firstName: string, lastName: string, guests: number }>(
+      `SELECT 
+         TO_CHAR(b."eventDate", 'YYYY-MM-DD') AS "eventDate",
+         u."firstName",
+         u."lastName",
+         b."numberOfGuests" AS guests
+       FROM "Booking" b
+       LEFT JOIN "User" u ON b."userId" = u.id
+       WHERE b."hallId" = $1
+         AND b."status" IN ('CONFIRMED', 'PENDING')
+       ORDER BY b."eventDate"`,
       [hallId]
     );
 
     const bookedDates = result.rows.map((row) => row.eventDate);
+    const bookedDetails: Record<string, string> = {};
+    result.rows.forEach(row => {
+      const name = [row.firstName, row.lastName].filter(Boolean).join(' ') || 'Mijoz';
+      bookedDetails[row.eventDate] = `Band qiluvchi: ${name} (${row.guests} kishi)`;
+    });
 
-    return successResponse({ bookedDates }, 'Booked dates retrieved successfully');
+    return successResponse({ bookedDates, bookedDetails }, 'Booked dates retrieved successfully');
   } catch (error) {
     return handleApiError(error, 'Failed to retrieve booked dates');
   }

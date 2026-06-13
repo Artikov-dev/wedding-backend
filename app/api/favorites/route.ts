@@ -23,6 +23,9 @@ export async function GET(request: NextRequest) {
           hall: {
             include: {
               amenities: true,
+              images: {
+                orderBy: { displayOrder: 'asc' },
+              },
             },
           },
         },
